@@ -188,19 +188,19 @@ export default function FilmDetail() {
         {film.countries?.length > 0 && (
           <div>
             <p className="text-xs text-[#99aabb] uppercase">Countries</p>
-            <p className="text-white text-sm">{film.countries.join(', ')}</p>
+            <p className="text-white text-sm">{film.countries.map((c: any) => c.name).join(', ')}</p>
           </div>
         )}
         {film.languages?.length > 0 && (
           <div>
             <p className="text-xs text-[#99aabb] uppercase">Languages</p>
-            <p className="text-white text-sm">{film.languages.join(', ')}</p>
+            <p className="text-white text-sm">{film.languages.map((l: any) => l.name).join(', ')}</p>
           </div>
         )}
         {film.studios?.length > 0 && (
           <div>
             <p className="text-xs text-[#99aabb] uppercase">Studios</p>
-            <p className="text-white text-sm">{film.studios.join(', ')}</p>
+            <p className="text-white text-sm">{film.studios.map((s: any) => s.name).join(', ')}</p>
           </div>
         )}
       </div>
