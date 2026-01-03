@@ -29,6 +29,31 @@ export interface DashboardStats {
   total_watched: number;
   total_logged: number;
   total_unlogged: number;
+  // New stats
+  top_actors?: { name: string; count: number }[];
+  runtime_stats?: {
+    avg_runtime: number;
+    longest: {
+      title: string;
+      year: number;
+      runtime: number;
+      poster_url?: string;
+    } | null;
+    shortest: {
+      title: string;
+      year: number;
+      runtime: number;
+      poster_url?: string;
+    } | null;
+  };
+  total_rewatches?: number;
+  total_liked?: number;
+  liked_films?: {
+    title: string;
+    year: number;
+    poster_url?: string;
+    rating?: number;
+  }[];
 }
 
 export interface Film {

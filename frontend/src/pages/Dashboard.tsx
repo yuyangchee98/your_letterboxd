@@ -71,6 +71,41 @@ export default function Dashboard() {
             </Flex>
           </Card>
         </Grid>
+
+        {/* Secondary Stats Row */}
+        <Grid numItemsMd={2} numItemsLg={4} className="gap-6 mt-6">
+          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+            <Text className="text-[#99aabb]">Average Runtime</Text>
+            <Metric className="text-white">{data.runtime_stats?.avg_runtime || 0} min</Metric>
+            <Flex className="mt-4">
+              <Text className="text-[#99aabb]">{Math.round((data.runtime_stats?.avg_runtime || 0) / 60 * 10) / 10}h per film</Text>
+            </Flex>
+          </Card>
+
+          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+            <Text className="text-[#99aabb]">Rewatches</Text>
+            <Metric className="text-white">{data.total_rewatches || 0}</Metric>
+            <Flex className="mt-4">
+              <Text className="text-[#99aabb]">films seen again</Text>
+            </Flex>
+          </Card>
+
+          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+            <Text className="text-[#99aabb]">Liked Films</Text>
+            <Metric className="text-white">{data.total_liked || 0}</Metric>
+            <Flex className="mt-4">
+              <Text className="text-[#ff8000]">♥ favorites</Text>
+            </Flex>
+          </Card>
+
+          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+            <Text className="text-[#99aabb]">Logged vs Unlogged</Text>
+            <Metric className="text-white">{data.total_logged || 0}</Metric>
+            <Flex className="mt-4">
+              <Text className="text-[#99aabb]">{data.total_unlogged || 0} unlogged watches</Text>
+            </Flex>
+          </Card>
+        </Grid>
       </div>
 
       {/* Calendar Heatmap */}
@@ -117,7 +152,7 @@ export default function Dashboard() {
       </Grid>
 
       {/* Top Lists */}
-      <Grid numItemsMd={3} className="gap-6">
+      <Grid numItemsMd={2} numItemsLg={4} className="gap-6">
         {/* Top Genres */}
         <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
           <Title className="text-white">Top Genres</Title>
@@ -158,6 +193,26 @@ export default function Dashboard() {
           </div>
         </Card>
 
+        {/* Top Actors */}
+        <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+          <Title className="text-white">Top Actors</Title>
+          <div className="mt-4 space-y-3">
+            {data.top_actors?.slice(0, 8).map((actor) => (
+              <div key={actor.name}>
+                <Flex>
+                  <Text className="text-white">{actor.name}</Text>
+                  <Text className="text-[#99aabb]">{actor.count}</Text>
+                </Flex>
+                <ProgressBar
+                  value={(actor.count / (data.top_actors?.[0]?.count || 1)) * 100}
+                  color="violet"
+                  className="mt-1"
+                />
+              </div>
+            ))}
+          </div>
+        </Card>
+
         {/* Top Decades */}
         <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
           <Title className="text-white">By Decade</Title>
@@ -172,6 +227,55 @@ export default function Dashboard() {
           />
         </Card>
       </Grid>
+
+      {/* Runtime Extremes */}
+      {data.runtime_stats?.longest && data.runtime_stats?.shortest && (
+        <div>
+          <h2 className="text-2xl font-bold text-white mb-6">Runtime Extremes</h2>
+          <Grid numItemsMd={2} className="gap-6">
+            <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+              <Title className="text-white">Longest Film</Title>
+              <Flex className="mt-4 gap-4">
+                <div className="w-20 h-30 bg-[#2c3440] rounded overflow-hidden flex-shrink-0">
+                  {data.runtime_stats.longest.poster_url && (
+                    <img
+                      src={data.runtime_stats.longest.poster_url}
+                      alt={data.runtime_stats.longest.title}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
+                <div>
+                  <Text className="text-white font-semibold">{data.runtime_stats.longest.title}</Text>
+                  <Text className="text-[#99aabb]">{data.runtime_stats.longest.year}</Text>
+                  <Metric className="text-[#00e054] mt-2">{data.runtime_stats.longest.runtime} min</Metric>
+                  <Text className="text-[#99aabb]">{Math.round(data.runtime_stats.longest.runtime / 60 * 10) / 10} hours</Text>
+                </div>
+              </Flex>
+            </Card>
+
+            <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+              <Title className="text-white">Shortest Film</Title>
+              <Flex className="mt-4 gap-4">
+                <div className="w-20 h-30 bg-[#2c3440] rounded overflow-hidden flex-shrink-0">
+                  {data.runtime_stats.shortest.poster_url && (
+                    <img
+                      src={data.runtime_stats.shortest.poster_url}
+                      alt={data.runtime_stats.shortest.title}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
+                <div>
+                  <Text className="text-white font-semibold">{data.runtime_stats.shortest.title}</Text>
+                  <Text className="text-[#99aabb]">{data.runtime_stats.shortest.year}</Text>
+                  <Metric className="text-[#40bcf4] mt-2">{data.runtime_stats.shortest.runtime} min</Metric>
+                </div>
+              </Flex>
+            </Card>
+          </Grid>
+        </div>
+      )}
 
       {/* Recent Films */}
       <div>

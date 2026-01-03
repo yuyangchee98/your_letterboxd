@@ -71,39 +71,54 @@ def get_dashboard(db: Session = Depends(get_db)):
     films = db.query(Film).all()
     user_films = db.query(UserFilm).filter(UserFilm.watched == True).all()
 
+    # Efficient lookup structures
+    films_dict = {f.id: f for f in films}
+    watched_film_ids = {uf.film_id for uf in user_films}
+
     # Datamaxx stats: total watched vs logged
     total_watched = len(user_films)
     total_logged = sum(1 for uf in user_films if (uf.watch_count or 0) > 0)
     total_unlogged = total_watched - total_logged
 
-    total_films = len(entries)  # Keep for backward compat (diary entries count)
-    total_runtime = sum(f.runtime_minutes or 0 for f in films if f.id in {e.film_id for e in entries})
+    total_films = total_watched  # Now using all watched films
+    total_runtime = sum(
+        films_dict[fid].runtime_minutes or 0
+        for fid in watched_film_ids
+        if fid in films_dict and films_dict[fid].runtime_minutes
+    )
     total_hours = round(total_runtime / 60, 1)
 
-    user_ratings = [e.rating for e in entries if e.rating]
+    # Ratings from user_films (aggregated user ratings for all watched)
+    user_ratings = [uf.rating for uf in user_films if uf.rating]
     avg_rating = round(sum(user_ratings) / len(user_ratings), 2) if user_ratings else 0
 
-    lb_ratings = [f.rating for f in films if f.rating and f.id in {e.film_id for e in entries}]
+    # Letterboxd average for all watched films
+    lb_ratings = [
+        films_dict[fid].rating
+        for fid in watched_film_ids
+        if fid in films_dict and films_dict[fid].rating
+    ]
     letterboxd_avg = round(sum(lb_ratings) / len(lb_ratings), 2) if lb_ratings else 0
 
+    # These need dates, so use diary entries
     films_this_year = sum(1 for e in entries if e.watched_date and e.watched_date >= year_start)
     films_this_month = sum(1 for e in entries if e.watched_date and e.watched_date >= month_start)
 
-    # Top genres
+    # Top genres (ALL watched films)
     genre_counter = Counter()
-    for e in entries:
-        film = next((f for f in films if f.id == e.film_id), None)
+    for uf in user_films:
+        film = films_dict.get(uf.film_id)
         if film and film.genres_json:
             for g in film.genres_json:
                 name = g.get("name") if isinstance(g, dict) else str(g)
-                if name and g.get("type", "genre") == "genre":
+                if name and (not isinstance(g, dict) or g.get("type", "genre") == "genre"):
                     genre_counter[name] += 1
     top_genres = [{"name": name, "count": count} for name, count in genre_counter.most_common(10)]
 
-    # Top directors
+    # Top directors (ALL watched films)
     director_counter = Counter()
-    for e in entries:
-        film = next((f for f in films if f.id == e.film_id), None)
+    for uf in user_films:
+        film = films_dict.get(uf.film_id)
         if film and film.directors_json:
             for d in film.directors_json:
                 name = d.get("name") if isinstance(d, dict) else str(d)
@@ -111,16 +126,16 @@ def get_dashboard(db: Session = Depends(get_db)):
                     director_counter[name] += 1
     top_directors = [{"name": name, "count": count} for name, count in director_counter.most_common(10)]
 
-    # Top decades
+    # Top decades (ALL watched films)
     decade_counter = Counter()
-    for e in entries:
-        film = next((f for f in films if f.id == e.film_id), None)
+    for uf in user_films:
+        film = films_dict.get(uf.film_id)
         if film and film.year:
             decade = f"{(film.year // 10) * 10}s"
             decade_counter[decade] += 1
     top_decades = [{"decade": decade, "count": count} for decade, count in decade_counter.most_common(10)]
 
-    # Rating distribution
+    # Rating distribution (from user_films ratings)
     rating_dist = Counter()
     for r in user_ratings:
         rating_dist[r] += 1
@@ -170,6 +185,60 @@ def get_dashboard(db: Session = Depends(get_db)):
                 "poster_url": film.poster_url,
             })
 
+    # Top actors (ALL watched films)
+    actor_counter = Counter()
+    for uf in user_films:
+        film = films_dict.get(uf.film_id)
+        if film and film.cast_json:
+            for actor in film.cast_json[:5]:  # Top 5 billed actors per film
+                name = actor.get("name") if isinstance(actor, dict) else None
+                if name:
+                    actor_counter[name] += 1
+    top_actors = [{"name": name, "count": count} for name, count in actor_counter.most_common(10)]
+
+    # Runtime stats (ALL watched films)
+    watched_films_with_runtime = [
+        films_dict[fid] for fid in watched_film_ids
+        if fid in films_dict and films_dict[fid].runtime_minutes
+    ]
+    if watched_films_with_runtime:
+        runtimes = [f.runtime_minutes for f in watched_films_with_runtime]
+        avg_runtime = round(sum(runtimes) / len(runtimes))
+        longest_film = max(watched_films_with_runtime, key=lambda f: f.runtime_minutes)
+        shortest_film = min(watched_films_with_runtime, key=lambda f: f.runtime_minutes)
+        runtime_stats = {
+            "avg_runtime": avg_runtime,
+            "longest": {
+                "title": longest_film.title,
+                "year": longest_film.year,
+                "runtime": longest_film.runtime_minutes,
+                "poster_url": longest_film.poster_url,
+            },
+            "shortest": {
+                "title": shortest_film.title,
+                "year": shortest_film.year,
+                "runtime": shortest_film.runtime_minutes,
+                "poster_url": shortest_film.poster_url,
+            },
+        }
+    else:
+        runtime_stats = {"avg_runtime": 0, "longest": None, "shortest": None}
+
+    # Rewatch and liked stats
+    total_rewatches = sum(1 for e in entries if e.rewatch)
+    total_liked = sum(1 for e in entries if e.liked)
+    liked_entries = [e for e in entries if e.liked]
+    liked_films_list = []
+    for e in sorted(liked_entries, key=lambda x: x.watched_date or datetime.min, reverse=True)[:12]:
+        film = next((f for f in films if f.id == e.film_id), None)
+        if film:
+            liked_films_list.append({
+                "title": film.title,
+                "year": film.year,
+                "poster_url": film.poster_url,
+                "rating": e.rating,
+            })
+
     return {
         "total_films": total_films,
         "total_hours": total_hours,
@@ -188,6 +257,12 @@ def get_dashboard(db: Session = Depends(get_db)):
         "total_watched": total_watched,
         "total_logged": total_logged,
         "total_unlogged": total_unlogged,
+        # New stats
+        "top_actors": top_actors,
+        "runtime_stats": runtime_stats,
+        "total_rewatches": total_rewatches,
+        "total_liked": total_liked,
+        "liked_films": liked_films_list,
     }
 
 
