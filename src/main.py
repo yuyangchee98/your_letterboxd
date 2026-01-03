@@ -10,7 +10,8 @@ from src.scheduler import create_scheduler
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    force=True  # Clear any existing handlers to avoid duplicates
 )
 
 logger = logging.getLogger(__name__)

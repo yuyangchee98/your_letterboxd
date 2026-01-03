@@ -196,6 +196,66 @@ def get_dashboard(db: Session = Depends(get_db)):
                     actor_counter[name] += 1
     top_actors = [{"name": name, "count": count} for name, count in actor_counter.most_common(10)]
 
+    # Top countries (ALL watched films)
+    country_counter = Counter()
+    for uf in user_films:
+        film = films_dict.get(uf.film_id)
+        if film and film.countries_json:
+            for country in film.countries_json:
+                name = country.get("name") if isinstance(country, dict) else None
+                if name:
+                    country_counter[name] += 1
+    top_countries = [{"name": name, "count": count} for name, count in country_counter.most_common(10)]
+
+    # Top languages (ALL watched films)
+    language_counter = Counter()
+    for uf in user_films:
+        film = films_dict.get(uf.film_id)
+        if film and film.languages_json:
+            for lang in film.languages_json:
+                name = lang.get("name") if isinstance(lang, dict) else None
+                if name:
+                    language_counter[name] += 1
+    top_languages = [{"name": name, "count": count} for name, count in language_counter.most_common(10)]
+
+    # Top studios (ALL watched films)
+    studio_counter = Counter()
+    for uf in user_films:
+        film = films_dict.get(uf.film_id)
+        if film and film.studios_json:
+            for studio in film.studios_json:
+                name = studio.get("name") if isinstance(studio, dict) else None
+                if name:
+                    studio_counter[name] += 1
+    top_studios = [{"name": name, "count": count} for name, count in studio_counter.most_common(10)]
+
+    # Top crew: writers, composers, cinematographers (from crew_json)
+    writer_counter = Counter()
+    composer_counter = Counter()
+    cinematographer_counter = Counter()
+    for uf in user_films:
+        film = films_dict.get(uf.film_id)
+        if film and film.crew_json:
+            crew = film.crew_json if isinstance(film.crew_json, dict) else {}
+            # Writers
+            for person in crew.get("writer", []):
+                name = person.get("name") if isinstance(person, dict) else None
+                if name:
+                    writer_counter[name] += 1
+            # Composers
+            for person in crew.get("composer", []):
+                name = person.get("name") if isinstance(person, dict) else None
+                if name:
+                    composer_counter[name] += 1
+            # Cinematographers
+            for person in crew.get("cinematography", []):
+                name = person.get("name") if isinstance(person, dict) else None
+                if name:
+                    cinematographer_counter[name] += 1
+    top_writers = [{"name": name, "count": count} for name, count in writer_counter.most_common(10)]
+    top_composers = [{"name": name, "count": count} for name, count in composer_counter.most_common(10)]
+    top_cinematographers = [{"name": name, "count": count} for name, count in cinematographer_counter.most_common(10)]
+
     # Runtime stats (ALL watched films)
     watched_films_with_runtime = [
         films_dict[fid] for fid in watched_film_ids
@@ -263,6 +323,13 @@ def get_dashboard(db: Session = Depends(get_db)):
         "total_rewatches": total_rewatches,
         "total_liked": total_liked,
         "liked_films": liked_films_list,
+        # Additional raw data stats
+        "top_countries": top_countries,
+        "top_languages": top_languages,
+        "top_studios": top_studios,
+        "top_writers": top_writers,
+        "top_composers": top_composers,
+        "top_cinematographers": top_cinematographers,
     }
 
 

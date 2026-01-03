@@ -151,6 +151,24 @@ export default function Dashboard() {
         </Card>
       </Grid>
 
+      {/* Films by Year */}
+      {data.films_by_year && data.films_by_year.length > 0 && (
+        <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+          <Title className="text-white">Films by Year</Title>
+          <Text className="text-[#99aabb]">Your watching journey over the years</Text>
+          <BarChart
+            className="mt-6 h-60"
+            data={data.films_by_year}
+            index="year"
+            categories={['count']}
+            colors={['violet']}
+            showLegend={false}
+            showGridLines={false}
+            yAxisWidth={40}
+          />
+        </Card>
+      )}
+
       {/* Top Lists */}
       <Grid numItemsMd={2} numItemsLg={4} className="gap-6">
         {/* Top Genres */}
@@ -277,6 +295,138 @@ export default function Dashboard() {
         </div>
       )}
 
+      {/* Production Stats */}
+      <div>
+        <h2 className="text-2xl font-bold text-white mb-6">Where Your Films Come From</h2>
+        <Grid numItemsMd={3} className="gap-6">
+          {/* Top Countries */}
+          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+            <Title className="text-white">Top Countries</Title>
+            <div className="mt-4 space-y-3">
+              {data.top_countries?.slice(0, 8).map((country) => (
+                <div key={country.name}>
+                  <Flex>
+                    <Text className="text-white">{country.name}</Text>
+                    <Text className="text-[#99aabb]">{country.count}</Text>
+                  </Flex>
+                  <ProgressBar
+                    value={(country.count / (data.top_countries?.[0]?.count || 1)) * 100}
+                    color="amber"
+                    className="mt-1"
+                  />
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Top Languages */}
+          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+            <Title className="text-white">Top Languages</Title>
+            <div className="mt-4 space-y-3">
+              {data.top_languages?.slice(0, 8).map((lang) => (
+                <div key={lang.name}>
+                  <Flex>
+                    <Text className="text-white">{lang.name}</Text>
+                    <Text className="text-[#99aabb]">{lang.count}</Text>
+                  </Flex>
+                  <ProgressBar
+                    value={(lang.count / (data.top_languages?.[0]?.count || 1)) * 100}
+                    color="rose"
+                    className="mt-1"
+                  />
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Top Studios */}
+          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+            <Title className="text-white">Top Studios</Title>
+            <div className="mt-4 space-y-3">
+              {data.top_studios?.slice(0, 8).map((studio) => (
+                <div key={studio.name}>
+                  <Flex>
+                    <Text className="text-white">{studio.name}</Text>
+                    <Text className="text-[#99aabb]">{studio.count}</Text>
+                  </Flex>
+                  <ProgressBar
+                    value={(studio.count / (data.top_studios?.[0]?.count || 1)) * 100}
+                    color="blue"
+                    className="mt-1"
+                  />
+                </div>
+              ))}
+            </div>
+          </Card>
+        </Grid>
+      </div>
+
+      {/* Crew Stats */}
+      <div>
+        <h2 className="text-2xl font-bold text-white mb-6">Behind the Camera</h2>
+        <Grid numItemsMd={3} className="gap-6">
+          {/* Top Writers */}
+          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+            <Title className="text-white">Top Writers</Title>
+            <div className="mt-4 space-y-3">
+              {data.top_writers?.slice(0, 8).map((writer) => (
+                <div key={writer.name}>
+                  <Flex>
+                    <Text className="text-white">{writer.name}</Text>
+                    <Text className="text-[#99aabb]">{writer.count}</Text>
+                  </Flex>
+                  <ProgressBar
+                    value={(writer.count / (data.top_writers?.[0]?.count || 1)) * 100}
+                    color="fuchsia"
+                    className="mt-1"
+                  />
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Top Composers */}
+          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+            <Title className="text-white">Top Composers</Title>
+            <div className="mt-4 space-y-3">
+              {data.top_composers?.slice(0, 8).map((composer) => (
+                <div key={composer.name}>
+                  <Flex>
+                    <Text className="text-white">{composer.name}</Text>
+                    <Text className="text-[#99aabb]">{composer.count}</Text>
+                  </Flex>
+                  <ProgressBar
+                    value={(composer.count / (data.top_composers?.[0]?.count || 1)) * 100}
+                    color="orange"
+                    className="mt-1"
+                  />
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Top Cinematographers */}
+          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+            <Title className="text-white">Top Cinematographers</Title>
+            <div className="mt-4 space-y-3">
+              {data.top_cinematographers?.slice(0, 8).map((dp) => (
+                <div key={dp.name}>
+                  <Flex>
+                    <Text className="text-white">{dp.name}</Text>
+                    <Text className="text-[#99aabb]">{dp.count}</Text>
+                  </Flex>
+                  <ProgressBar
+                    value={(dp.count / (data.top_cinematographers?.[0]?.count || 1)) * 100}
+                    color="lime"
+                    className="mt-1"
+                  />
+                </div>
+              ))}
+            </div>
+          </Card>
+        </Grid>
+      </div>
+
       {/* Recent Films */}
       <div>
         <h2 className="text-2xl font-bold text-white mb-6">Recently Watched</h2>
@@ -304,6 +454,38 @@ export default function Dashboard() {
           ))}
         </div>
       </div>
+
+      {/* Liked Films */}
+      {data.liked_films && data.liked_films.length > 0 && (
+        <div>
+          <h2 className="text-2xl font-bold text-white mb-6">
+            <span className="text-[#ff8000]">♥</span> Recently Liked
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {data.liked_films.slice(0, 12).map((film, i) => (
+              <div key={i} className="group">
+                <div className="aspect-[2/3] bg-[#2c3440] rounded-lg overflow-hidden mb-2 ring-2 ring-[#ff8000]/30">
+                  {film.poster_url ? (
+                    <img
+                      src={film.poster_url}
+                      alt={film.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-[#99aabb] text-xs text-center p-2">
+                      {film.title}
+                    </div>
+                  )}
+                </div>
+                <p className="text-sm text-white truncate">{film.title}</p>
+                <p className="text-xs text-[#99aabb]">
+                  {film.year} {film.rating ? `• ★ ${film.rating}` : ''}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

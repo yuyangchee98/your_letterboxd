@@ -54,6 +54,13 @@ export interface DashboardStats {
     poster_url?: string;
     rating?: number;
   }[];
+  // Additional raw data stats
+  top_countries?: { name: string; count: number }[];
+  top_languages?: { name: string; count: number }[];
+  top_studios?: { name: string; count: number }[];
+  top_writers?: { name: string; count: number }[];
+  top_composers?: { name: string; count: number }[];
+  top_cinematographers?: { name: string; count: number }[];
 }
 
 export interface Film {
