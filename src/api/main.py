@@ -333,6 +333,72 @@ def get_dashboard(db: Session = Depends(get_db)):
     }
 
 
+@app.get("/api/insights")
+def get_insights(db: Session = Depends(get_db)):
+    """Get derived insights and analytics."""
+    user_films = db.query(UserFilm).filter(UserFilm.watched == True).all()
+    films = {f.id: f for f in db.query(Film).all()}
+
+    # Calculate rating gaps for all films with both ratings
+    rated_films = []
+    for uf in user_films:
+        film = films.get(uf.film_id)
+        if uf.rating and film and film.rating:
+            gap = uf.rating - film.rating
+            rated_films.append({
+                "title": film.title,
+                "year": film.year,
+                "poster_url": film.poster_url,
+                "user_rating": uf.rating,
+                "letterboxd_rating": round(film.rating, 2),
+                "gap": round(gap, 2),
+                "film_id": film.id,
+            })
+
+    # Calculate average ratings and gap
+    if rated_films:
+        avg_user = sum(f["user_rating"] for f in rated_films) / len(rated_films)
+        avg_lb = sum(f["letterboxd_rating"] for f in rated_films) / len(rated_films)
+        avg_gap = avg_user - avg_lb
+    else:
+        avg_user = 0
+        avg_lb = 0
+        avg_gap = 0
+
+    # Determine personality
+    if avg_gap < -0.3:
+        personality = "harsh"
+    elif avg_gap > 0.3:
+        personality = "generous"
+    else:
+        personality = "balanced"
+
+    # Sort by gap to find extremes (return ALL, not just top 10)
+    # Underrated by LB = user rated higher (positive gap, sorted desc)
+    underrated = sorted(
+        [f for f in rated_films if f["gap"] > 0],
+        key=lambda x: x["gap"],
+        reverse=True
+    )
+    # Overrated by LB = user rated lower (negative gap, sorted asc)
+    overrated = sorted(
+        [f for f in rated_films if f["gap"] < 0],
+        key=lambda x: x["gap"]
+    )
+
+    return {
+        "rating_stats": {
+            "avg_user_rating": round(avg_user, 2),
+            "avg_letterboxd_rating": round(avg_lb, 2),
+            "avg_gap": round(avg_gap, 2),
+            "personality": personality,
+            "total_rated": len(rated_films),
+        },
+        "underrated_by_letterboxd": underrated,
+        "overrated_by_letterboxd": overrated,
+    }
+
+
 @app.get("/api/films")
 def get_films(
     sort: str = "title",

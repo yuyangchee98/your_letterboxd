@@ -131,3 +131,17 @@ export function useProfile() {
 
   return { data, loading };
 }
+
+export function useInsights() {
+  const [data, setData] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/insights`)
+      .then(res => res.json())
+      .then(setData)
+      .finally(() => setLoading(false));
+  }, []);
+
+  return { data, loading };
+}
