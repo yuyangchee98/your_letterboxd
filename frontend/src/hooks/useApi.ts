@@ -163,3 +163,37 @@ export function useExplorer(sort: string = 'title', order: string = 'asc', searc
 
   return { data, loading };
 }
+
+export function useSyncStatus(pollInterval: number = 0) {
+  const [data, setData] = useState<{
+    is_running: boolean;
+    running_since: string | null;
+    last_sync: string | null;
+    last_sync_type: string | null;
+    last_sync_items: number | null;
+  } | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchStatus = () => {
+    fetch(`${API_BASE}/sync/status`)
+      .then(res => res.json())
+      .then(setData)
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchStatus();
+    if (pollInterval > 0) {
+      const interval = setInterval(fetchStatus, pollInterval);
+      return () => clearInterval(interval);
+    }
+  }, [pollInterval]);
+
+  return { data, loading, refetch: fetchStatus };
+}
+
+export async function triggerSync(username: string): Promise<{ status: string; username: string; includes_tmdb: boolean }> {
+  const res = await fetch(`${API_BASE}/sync/${username}`, { method: 'POST' });
+  if (!res.ok) throw new Error('Failed to trigger sync');
+  return res.json();
+}

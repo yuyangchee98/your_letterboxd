@@ -10,7 +10,7 @@ services:
       - LETTERBOXD_USERNAME=${LETTERBOXD_USERNAME}
       - TMDB_ACCESS_TOKEN=${TMDB_ACCESS_TOKEN}
       - DATABASE_PATH=/app/data/letterboxd.db
-      - SYNC_SCHEDULE=0 6 * * *
+      - SYNC_SCHEDULE=30 16 * * *
       - SYNC_MIN_DELAY=4.0
       - TMDB_MIN_DELAY=0.3
     restart: unless-stopped

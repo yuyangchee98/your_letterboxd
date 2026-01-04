@@ -72,6 +72,24 @@ def trigger_sync(
     return {"status": "started", "username": username, "includes_tmdb": bool(os.environ.get("TMDB_ACCESS_TOKEN"))}
 
 
+@app.get("/api/sync/status")
+def get_sync_status(db: Session = Depends(get_db)):
+    """Get current sync status and last sync info."""
+    running = db.query(SyncLog).filter(SyncLog.status == "running").first()
+
+    last_completed = db.query(SyncLog).filter(
+        SyncLog.status.in_(["completed", "completed_with_errors"])
+    ).order_by(SyncLog.completed_at.desc()).first()
+
+    return {
+        "is_running": running is not None,
+        "running_since": running.started_at.isoformat() if running else None,
+        "last_sync": last_completed.completed_at.isoformat() if last_completed and last_completed.completed_at else None,
+        "last_sync_type": last_completed.sync_type if last_completed else None,
+        "last_sync_items": last_completed.items_processed if last_completed else None,
+    }
+
+
 @app.post("/api/tmdb/sync")
 def trigger_tmdb_sync(
     background_tasks: BackgroundTasks,
