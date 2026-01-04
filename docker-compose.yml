@@ -3,7 +3,7 @@ services:
     build: .
     container_name: your-letterboxd
     ports:
-      - "8765:8000"
+      - "60007:8000"
     volumes:
       - ./data:/app/data
     environment:
