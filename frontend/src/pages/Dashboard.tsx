@@ -111,6 +111,36 @@ export default function Dashboard() {
         </Grid>
       </div>
 
+      {/* Watching Patterns Stats */}
+      <div>
+        <h2 className="text-2xl font-bold text-white mb-6">Watching Patterns</h2>
+        <Grid numItemsMd={3} className="gap-6">
+          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+            <Text className="text-[#99aabb]">Binge Days</Text>
+            <Metric className="text-white">{data.binge_days || 0}</Metric>
+            <Flex className="mt-4">
+              <Text className="text-[#99aabb]">days with 2+ films</Text>
+            </Flex>
+          </Card>
+
+          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+            <Text className="text-[#99aabb]">Longest Streak</Text>
+            <Metric className="text-white">{data.longest_streak || 0}</Metric>
+            <Flex className="mt-4">
+              <Text className="text-[#99aabb]">consecutive days</Text>
+            </Flex>
+          </Card>
+
+          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+            <Text className="text-[#99aabb]">Most in One Day</Text>
+            <Metric className="text-white">{data.max_in_one_day || 0}</Metric>
+            <Flex className="mt-4">
+              <Text className="text-[#99aabb]">films watched</Text>
+            </Flex>
+          </Card>
+        </Grid>
+      </div>
+
       {/* Calendar Heatmap */}
       <div>
         <h2 className="text-2xl font-bold text-white mb-6">Watch Activity</h2>
@@ -118,6 +148,24 @@ export default function Dashboard() {
           <CalendarHeatmap />
         </Card>
       </div>
+
+      {/* Day of Week Distribution */}
+      {data.day_of_week && data.day_of_week.length > 0 && (
+        <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+          <Title className="text-white">When You Watch</Title>
+          <Text className="text-[#99aabb]">Films watched by day of week</Text>
+          <BarChart
+            className="mt-6 h-48"
+            data={data.day_of_week}
+            index="day"
+            categories={['count']}
+            colors={['violet']}
+            showLegend={false}
+            showGridLines={false}
+            yAxisWidth={40}
+          />
+        </Card>
+      )}
 
       {/* Charts Row */}
       <Grid numItemsMd={2} className="gap-6">

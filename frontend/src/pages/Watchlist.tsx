@@ -12,15 +12,20 @@ export default function Watchlist() {
     );
   }
 
+  const totalRuntime = films.reduce((sum: number, f: any) => sum + (f.runtime_minutes || 0), 0);
+  const totalHours = Math.round(totalRuntime / 60);
+
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-white">Watchlist</h2>
-        <p className="text-[#99aabb]">{films.length} films to watch</p>
+        <p className="text-[#99aabb]">
+          {films.length} films to watch • {totalHours} hours total
+        </p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
-        {films.map((film) => (
+        {films.map((film: any) => (
           <Link key={film.id} to={`/films/${film.id}`} className="group">
             <div className="aspect-[2/3] bg-[#2c3440] rounded-lg overflow-hidden mb-2">
               {film.poster_url ? (

@@ -61,6 +61,11 @@ export interface DashboardStats {
   top_writers?: { name: string; count: number }[];
   top_composers?: { name: string; count: number }[];
   top_cinematographers?: { name: string; count: number }[];
+  // Watching patterns
+  day_of_week?: { day: string; count: number }[];
+  binge_days?: number;
+  max_in_one_day?: number;
+  longest_streak?: number;
 }
 
 export interface Film {

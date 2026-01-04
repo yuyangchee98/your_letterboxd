@@ -376,6 +376,43 @@ def get_dashboard(db: Session = Depends(get_db)):
                 "rating": e.rating,
             })
 
+    # === WATCHING PATTERNS ===
+
+    # Day of week distribution
+    day_of_week_counter = Counter()
+    for e in entries:
+        if e.watched_date:
+            day_name = e.watched_date.strftime("%a")  # Mon, Tue, Wed...
+            day_of_week_counter[day_name] += 1
+    # Ensure all days are present in order
+    days_order = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    day_of_week = [{"day": day, "count": day_of_week_counter.get(day, 0)} for day in days_order]
+
+    # Binge days (days with 2+ films watched)
+    films_per_day = Counter()
+    for e in entries:
+        if e.watched_date:
+            day_key = e.watched_date.strftime("%Y-%m-%d")
+            films_per_day[day_key] += 1
+    binge_days = sum(1 for count in films_per_day.values() if count >= 2)
+    max_in_one_day = max(films_per_day.values()) if films_per_day else 0
+
+    # Watch streaks (consecutive days with at least 1 film)
+    if films_per_day:
+        sorted_days = sorted(films_per_day.keys())
+        longest_streak = 1
+        current_streak = 1
+        for i in range(1, len(sorted_days)):
+            prev_date = datetime.strptime(sorted_days[i-1], "%Y-%m-%d")
+            curr_date = datetime.strptime(sorted_days[i], "%Y-%m-%d")
+            if (curr_date - prev_date).days == 1:
+                current_streak += 1
+                longest_streak = max(longest_streak, current_streak)
+            else:
+                current_streak = 1
+    else:
+        longest_streak = 0
+
     return {
         "total_films": total_films,
         "total_hours": total_hours,
@@ -407,6 +444,11 @@ def get_dashboard(db: Session = Depends(get_db)):
         "top_writers": top_writers,
         "top_composers": top_composers,
         "top_cinematographers": top_cinematographers,
+        # Watching patterns
+        "day_of_week": day_of_week,
+        "binge_days": binge_days,
+        "max_in_one_day": max_in_one_day,
+        "longest_streak": longest_streak,
     }
 
 
@@ -1308,14 +1350,26 @@ def get_diary(
 
 @app.get("/api/watchlist")
 def get_watchlist(db: Session = Depends(get_db)):
-    """Get user's watchlist."""
+    """Get user's watchlist with streaming availability."""
     watchlist_items = db.query(WatchlistItem).all()
-    films = {f.id: f for f in db.query(Film).all()}
+    watchlist_film_ids = [w.film_id for w in watchlist_items]
+
+    films = {f.id: f for f in db.query(Film).filter(Film.id.in_(watchlist_film_ids)).all()}
+    tmdb_data = {t.film_id: t for t in db.query(TmdbFilm).filter(TmdbFilm.film_id.in_(watchlist_film_ids)).all()}
 
     result = []
     for item in watchlist_items:
         film = films.get(item.film_id)
         if film:
+            tmdb = tmdb_data.get(item.film_id)
+
+            # Extract streaming services (US flatrate only)
+            streaming = []
+            if tmdb and tmdb.watch_providers_json:
+                us_providers = tmdb.watch_providers_json.get("US", {})
+                for provider in us_providers.get("flatrate", []):
+                    streaming.append(provider.get("provider_name"))
+
             result.append({
                 "id": film.id,
                 "title": film.title,
@@ -1326,6 +1380,7 @@ def get_watchlist(db: Session = Depends(get_db)):
                 "genres": [g.get("name") for g in (film.genres_json or []) if isinstance(g, dict) and g.get("type") == "genre"],
                 "directors": [d.get("name") for d in (film.directors_json or []) if isinstance(d, dict)],
                 "added_date": item.added_date.isoformat() if item.added_date else None,
+                "streaming": streaming,
             })
 
     return result

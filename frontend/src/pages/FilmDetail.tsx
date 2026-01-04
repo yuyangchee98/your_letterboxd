@@ -1,6 +1,14 @@
 import { useParams, Link } from 'react-router-dom';
 import { useFilmDetail } from '../hooks/useApi';
 
+function formatCurrency(num: number | null | undefined): string {
+  if (!num) return '-';
+  if (num >= 1_000_000_000) return `$${(num / 1_000_000_000).toFixed(1)}B`;
+  if (num >= 1_000_000) return `$${(num / 1_000_000).toFixed(0)}M`;
+  if (num >= 1_000) return `$${(num / 1_000).toFixed(0)}K`;
+  return `$${num}`;
+}
+
 export default function FilmDetail() {
   const { id } = useParams<{ id: string }>();
   const { data: film, loading } = useFilmDetail(id ? parseInt(id) : null);
@@ -236,6 +244,71 @@ export default function FilmDetail() {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* TMDB Data Section */}
+      {film.tmdb && (
+        <div className="space-y-6">
+          {/* Box Office */}
+          {(film.tmdb.budget || film.tmdb.revenue) && (
+            <div>
+              <h2 className="text-lg font-semibold text-white mb-4">Box Office</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {film.tmdb.budget > 0 && (
+                  <div className="bg-[#1c2228] p-4 rounded-lg">
+                    <p className="text-xs text-[#99aabb] uppercase">Budget</p>
+                    <p className="text-xl text-white font-bold">{formatCurrency(film.tmdb.budget)}</p>
+                  </div>
+                )}
+                {film.tmdb.revenue > 0 && (
+                  <div className="bg-[#1c2228] p-4 rounded-lg">
+                    <p className="text-xs text-[#99aabb] uppercase">Box Office</p>
+                    <p className="text-xl text-[#00e054] font-bold">{formatCurrency(film.tmdb.revenue)}</p>
+                  </div>
+                )}
+                {film.tmdb.budget > 0 && film.tmdb.revenue > 0 && (
+                  <div className="bg-[#1c2228] p-4 rounded-lg">
+                    <p className="text-xs text-[#99aabb] uppercase">ROI</p>
+                    <p className={`text-xl font-bold ${film.tmdb.revenue > film.tmdb.budget ? 'text-[#00e054]' : 'text-[#ff6666]'}`}>
+                      {((film.tmdb.revenue / film.tmdb.budget - 1) * 100).toFixed(0)}%
+                    </p>
+                  </div>
+                )}
+                {film.tmdb.certification && (
+                  <div className="bg-[#1c2228] p-4 rounded-lg">
+                    <p className="text-xs text-[#99aabb] uppercase">Rating</p>
+                    <p className="text-xl text-white font-bold">{film.tmdb.certification}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Collection */}
+          {film.tmdb.collection && (
+            <div>
+              <h2 className="text-lg font-semibold text-white mb-4">Part of Collection</h2>
+              <div className="bg-[#1c2228] p-4 rounded-lg inline-block">
+                <p className="text-[#f5c518] font-medium">{film.tmdb.collection.name}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Keywords */}
+          {film.tmdb.keywords?.length > 0 && (
+            <div>
+              <h2 className="text-lg font-semibold text-white mb-4">Themes & Keywords</h2>
+              <div className="flex flex-wrap gap-2">
+                {film.tmdb.keywords.map((keyword: string) => (
+                  <span key={keyword} className="px-3 py-1 bg-[#2c3440] text-[#99aabb] text-sm rounded-full">
+                    {keyword}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
         </div>
       )}
     </div>
