@@ -36,7 +36,10 @@ export default function Dashboard() {
     <div className="space-y-8">
       {/* Hero Stats */}
       <div>
-        <h2 className="text-2xl font-bold text-white mb-6">Overview</h2>
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-white">Overview</h2>
+          <p className="text-[#99aabb] text-sm">What you watch — see <a href="/insights" className="text-[#00e054] hover:underline">Insights</a> for what you like</p>
+        </div>
         <Grid numItemsMd={2} numItemsLg={4} className="gap-6">
           <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
             <Text className="text-[#99aabb]">Films Watched</Text>

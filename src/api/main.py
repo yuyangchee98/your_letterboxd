@@ -593,19 +593,128 @@ def get_insights(db: Session = Depends(get_db)):
         for cert, count in cert_counts.most_common()
     ]
 
-    # === KEYWORDS ===
-    keyword_counts = Counter()
-    for tmdb in tmdb_films.values():
-        if tmdb.keywords_json:
-            for kw in tmdb.keywords_json[:10]:  # Top 10 keywords per film
-                name = kw.get("name") if isinstance(kw, dict) else None
-                if name:
-                    keyword_counts[name] += 1
+    # === KEYWORDS WITH RATINGS ===
+    keyword_stats = {}  # keyword -> {count, ratings: []}
+    for film_id, tmdb in tmdb_films.items():
+        if not tmdb.keywords_json:
+            continue
+        uf = user_films_by_id.get(film_id)
+        for kw in tmdb.keywords_json[:10]:  # Top 10 keywords per film
+            name = kw.get("name") if isinstance(kw, dict) else None
+            if not name:
+                continue
+            if name not in keyword_stats:
+                keyword_stats[name] = {"count": 0, "ratings": []}
+            keyword_stats[name]["count"] += 1
+            if uf and uf.rating:
+                keyword_stats[name]["ratings"].append(uf.rating)
 
+    # Calculate avg rating per keyword (min 3 rated films)
+    keyword_ratings = []
+    for name, stats in keyword_stats.items():
+        if len(stats["ratings"]) >= 3:
+            avg = round(sum(stats["ratings"]) / len(stats["ratings"]), 2)
+            keyword_ratings.append({
+                "keyword": name,
+                "count": stats["count"],
+                "rated_count": len(stats["ratings"]),
+                "avg_rating": avg,
+            })
+
+    # Sort by avg rating
+    keyword_ratings.sort(key=lambda x: x["avg_rating"], reverse=True)
+
+    # Also keep simple frequency list for display
     top_keywords = [
         {"keyword": kw, "count": count}
-        for kw, count in keyword_counts.most_common(25)
+        for kw, count in Counter({k: v["count"] for k, v in keyword_stats.items()}).most_common(25)
     ]
+
+    # === RATING TRENDS OVER TIME ===
+    rating_by_year = {}  # year_watched -> {ratings: [], count: 0}
+    for uf in user_films:
+        if not uf.first_watched or not uf.rating:
+            continue
+        year = uf.first_watched.year
+        if year not in rating_by_year:
+            rating_by_year[year] = {"ratings": [], "count": 0}
+        rating_by_year[year]["ratings"].append(uf.rating)
+        rating_by_year[year]["count"] += 1
+
+    rating_trends = []
+    for year in sorted(rating_by_year.keys()):
+        stats = rating_by_year[year]
+        if stats["count"] >= 5:  # Only years with 5+ rated films
+            avg = round(sum(stats["ratings"]) / len(stats["ratings"]), 2)
+            rating_trends.append({
+                "year": year,
+                "avg_rating": avg,
+                "count": stats["count"],
+            })
+
+    # === DECADE PREFERENCES (by release decade) ===
+    rating_by_decade = {}
+    for uf in user_films:
+        film = films.get(uf.film_id)
+        if not film or not film.year or not uf.rating:
+            continue
+        decade = (film.year // 10) * 10
+        decade_label = f"{decade}s"
+        if decade_label not in rating_by_decade:
+            rating_by_decade[decade_label] = {"ratings": [], "count": 0, "decade": decade}
+        rating_by_decade[decade_label]["ratings"].append(uf.rating)
+        rating_by_decade[decade_label]["count"] += 1
+
+    decade_ratings = []
+    for label, stats in rating_by_decade.items():
+        if stats["count"] >= 3:  # Only decades with 3+ rated films
+            avg = round(sum(stats["ratings"]) / len(stats["ratings"]), 2)
+            decade_ratings.append({
+                "decade": label,
+                "avg_rating": avg,
+                "count": stats["count"],
+                "sort_key": stats["decade"],
+            })
+    decade_ratings.sort(key=lambda x: x["sort_key"])
+
+    # === FRANCHISE/COLLECTION TRACKER ===
+    collection_stats = {}
+    for film_id, tmdb in tmdb_films.items():
+        if not tmdb.collection_name:
+            continue
+        uf = user_films_by_id.get(film_id)
+        film = films.get(film_id)
+        if not film:
+            continue
+
+        coll_name = tmdb.collection_name
+        if coll_name not in collection_stats:
+            collection_stats[coll_name] = {
+                "ratings": [],
+                "count": 0,
+                "films": [],
+                "poster": tmdb.collection_poster_path,
+            }
+        collection_stats[coll_name]["count"] += 1
+        collection_stats[coll_name]["films"].append({
+            "title": film.title,
+            "year": film.year,
+            "rating": uf.rating if uf else None,
+        })
+        if uf and uf.rating:
+            collection_stats[coll_name]["ratings"].append(uf.rating)
+
+    collections = []
+    for name, stats in collection_stats.items():
+        if stats["count"] >= 2:  # Only collections with 2+ films watched
+            avg = round(sum(stats["ratings"]) / len(stats["ratings"]), 2) if stats["ratings"] else None
+            collections.append({
+                "name": name,
+                "count": stats["count"],
+                "avg_rating": avg,
+                "films": sorted(stats["films"], key=lambda x: x["year"] or 0),
+            })
+    collections.sort(key=lambda x: x["count"], reverse=True)
 
     return {
         "rating_stats": {
@@ -633,6 +742,13 @@ def get_insights(db: Session = Depends(get_db)):
         },
         "certification_breakdown": certification_breakdown,
         "top_keywords": top_keywords,
+        "keyword_ratings": {
+            "best": keyword_ratings[:15],
+            "worst": list(reversed(keyword_ratings[-15:])) if len(keyword_ratings) > 15 else [],
+        },
+        "rating_trends": rating_trends,
+        "decade_ratings": decade_ratings,
+        "collections": collections[:15],
     }
 
 

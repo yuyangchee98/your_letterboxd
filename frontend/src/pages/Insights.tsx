@@ -8,6 +8,7 @@ import {
   ProgressBar,
   BarChart,
   DonutChart,
+  LineChart,
   Grid,
 } from '@tremor/react';
 import { Link } from 'react-router-dom';
@@ -142,7 +143,10 @@ export default function Insights() {
     actor_ratings,
     financial,
     certification_breakdown,
-    top_keywords,
+    keyword_ratings,
+    rating_trends,
+    decade_ratings,
+    collections,
   } = data;
 
   const personalities: Record<string, { title: string; description: string; color: string }> = {
@@ -201,7 +205,9 @@ export default function Insights() {
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-white mb-2">Insights</h1>
-        <p className="text-[#99aabb]">Deep analysis of your film taste</p>
+        <p className="text-[#99aabb]">
+          What you <span className="text-[#00e054] font-medium">like</span> — not just what you watch
+        </p>
       </div>
 
       {/* Rating Personality */}
@@ -414,28 +420,117 @@ export default function Insights() {
           </Card>
         )}
 
-        {top_keywords && top_keywords.length > 0 && (
+        {keyword_ratings && (keyword_ratings.best?.length > 0 || keyword_ratings.worst?.length > 0) && (
           <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
-            <Title className="text-white">Common Themes</Title>
-            <Text className="text-[#99aabb]">Keywords and themes in your films</Text>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {top_keywords.map((kw: any, i: number) => (
-                <span
-                  key={kw.keyword}
-                  className="px-3 py-1 rounded-full text-sm"
-                  style={{
-                    backgroundColor: `rgba(0, 224, 84, ${0.1 + (1 - i / top_keywords.length) * 0.3})`,
-                    color: i < 5 ? '#00e054' : '#99aabb',
-                    fontWeight: i < 5 ? 600 : 400,
-                  }}
-                >
-                  {kw.keyword} ({kw.count})
-                </span>
-              ))}
+            <Title className="text-white">Theme Preferences</Title>
+            <Text className="text-[#99aabb]">Keywords you rate highest vs lowest (min 3 films)</Text>
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              {/* Best keywords */}
+              <div>
+                <Text className="text-[#00e054] font-medium mb-2">Themes you love</Text>
+                <div className="space-y-1">
+                  {keyword_ratings.best?.slice(0, 8).map((kw: any) => (
+                    <div key={kw.keyword} className="flex justify-between text-sm">
+                      <span className="text-white truncate">{kw.keyword}</span>
+                      <span className="text-[#00e054] font-medium ml-2">★ {kw.avg_rating}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {/* Worst keywords */}
+              <div>
+                <Text className="text-[#ff8000] font-medium mb-2">Themes you dislike</Text>
+                <div className="space-y-1">
+                  {keyword_ratings.worst?.slice(0, 8).map((kw: any) => (
+                    <div key={kw.keyword} className="flex justify-between text-sm">
+                      <span className="text-white truncate">{kw.keyword}</span>
+                      <span className="text-[#ff8000] font-medium ml-2">★ {kw.avg_rating}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </Card>
         )}
       </Grid>
+
+      {/* Rating Trends Over Time */}
+      {rating_trends && rating_trends.length > 1 && (
+        <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+          <Title className="text-white">Your Rating Trends</Title>
+          <Text className="text-[#99aabb]">How your ratings have changed over the years</Text>
+          <LineChart
+            className="mt-6 h-64"
+            data={rating_trends}
+            index="year"
+            categories={['avg_rating']}
+            colors={['emerald']}
+            showLegend={false}
+            showGridLines={false}
+            yAxisWidth={40}
+            valueFormatter={(v) => v.toFixed(2)}
+            curveType="monotone"
+          />
+        </Card>
+      )}
+
+      {/* Decade Preferences */}
+      {decade_ratings && decade_ratings.length > 0 && (
+        <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
+          <Title className="text-white">Decade Preferences</Title>
+          <Text className="text-[#99aabb]">Which era of cinema do you rate highest?</Text>
+          <BarChart
+            className="mt-6 h-64"
+            data={decade_ratings.map((d: any) => ({ decade: d.decade, "Avg Rating": d.avg_rating, Films: d.count }))}
+            index="decade"
+            categories={['Avg Rating']}
+            colors={['amber']}
+            showLegend={false}
+            showGridLines={false}
+            yAxisWidth={40}
+            valueFormatter={(v) => v.toFixed(2)}
+          />
+        </Card>
+      )}
+
+      {/* Collections/Franchises */}
+      {collections && collections.length > 0 && (
+        <div>
+          <h2 className="text-2xl font-bold text-white mb-2">Your Franchises</h2>
+          <p className="text-[#99aabb] mb-6">Collections and series you've explored</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {collections.slice(0, 9).map((coll: any) => (
+              <Card key={coll.name} className="bg-[#1c2228] border-[#2c3440] ring-0">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1 min-w-0">
+                    <Title className="text-white text-base truncate">{coll.name.replace(' Collection', '')}</Title>
+                    <Text className="text-[#99aabb]">
+                      {coll.count} films watched
+                      {coll.avg_rating && ` · Avg ★ ${coll.avg_rating}`}
+                    </Text>
+                  </div>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-1">
+                  {coll.films.slice(0, 5).map((film: any) => (
+                    <span
+                      key={film.title}
+                      className="text-xs px-2 py-0.5 bg-[#2c3440] text-[#99aabb] rounded"
+                      title={`${film.title} (${film.year})${film.rating ? ` - ★${film.rating}` : ''}`}
+                    >
+                      {film.title.length > 20 ? film.title.slice(0, 20) + '...' : film.title}
+                    </span>
+                  ))}
+                  {coll.films.length > 5 && (
+                    <span className="text-xs px-2 py-0.5 text-[#99aabb]">
+                      +{coll.films.length - 5} more
+                    </span>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Hidden Gems */}
       {topGems.length > 0 && (
