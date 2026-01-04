@@ -98,7 +98,10 @@ class LetterboxdSync:
             logger.error(f"Sync failed: {e}")
             sync_log.status = "failed"
             sync_log.error_message = str(e)
+            sync_log.completed_at = datetime.utcnow()
             stats["errors"].append(str(e))
+            db.commit()
+            raise
 
         db.commit()
 
@@ -304,13 +307,16 @@ class LetterboxdSync:
     def _get_or_create_film(
         self, db: Session, slug: str, fetch_details: bool
     ) -> Optional[Film]:
-        """Get existing film or create new one."""
+        """Get existing film or create new one, retry if previous fetch failed."""
         film = db.query(Film).filter(Film.slug == slug).first()
+        needs_details = film is None or film.title == film.slug
 
-        if film:
+        if film and not needs_details:
             return film
 
-        film = Film(slug=slug)
+        if not film:
+            film = Film(slug=slug)
+            db.add(film)
 
         if fetch_details:
             try:
@@ -347,13 +353,16 @@ class LetterboxdSync:
                 film.tmdb_id = details.get("tmdb_id")
                 film.imdb_id = details.get("imdb_id")
             except Exception as e:
+                error_str = str(e)
                 logger.warning(f"Failed to fetch details for {slug}: {e}")
-                self._failed_films.append((slug, str(e)))
+                self._failed_films.append((slug, error_str))
+                if "503" in error_str or "Service Unavailable" in error_str:
+                    logger.warning("Rate limited by Letterboxd - stopping sync, will resume on next run")
+                    raise Exception("Rate limited - sync will resume on next run")
                 film.title = slug
         else:
             film.title = slug
 
-        db.add(film)
         db.commit()
         return film
 

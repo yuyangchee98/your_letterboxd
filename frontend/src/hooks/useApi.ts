@@ -169,8 +169,9 @@ export function useSyncStatus(pollInterval: number = 0) {
     is_running: boolean;
     running_since: string | null;
     last_sync: string | null;
-    last_sync_type: string | null;
+    last_sync_status: string | null;
     last_sync_items: number | null;
+    last_sync_error: string | null;
   } | null>(null);
   const [loading, setLoading] = useState(true);
 

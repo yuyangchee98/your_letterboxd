@@ -32,6 +32,16 @@ if STATIC_DIR.exists():
 @app.on_event("startup")
 def startup():
     init_db()
+    from src.db.database import SessionLocal
+    db = SessionLocal()
+    try:
+        stale = db.query(SyncLog).filter(SyncLog.status == "running").all()
+        for sync in stale:
+            sync.status = "interrupted"
+        if stale:
+            db.commit()
+    finally:
+        db.close()
 
 
 def _full_sync_task(username: str, fetch_details: bool = True):
@@ -77,16 +87,17 @@ def get_sync_status(db: Session = Depends(get_db)):
     """Get current sync status and last sync info."""
     running = db.query(SyncLog).filter(SyncLog.status == "running").first()
 
-    last_completed = db.query(SyncLog).filter(
-        SyncLog.status.in_(["completed", "completed_with_errors"])
+    last_sync = db.query(SyncLog).filter(
+        SyncLog.status.in_(["completed", "completed_with_errors", "failed"])
     ).order_by(SyncLog.completed_at.desc()).first()
 
     return {
         "is_running": running is not None,
         "running_since": running.started_at.isoformat() if running else None,
-        "last_sync": last_completed.completed_at.isoformat() if last_completed and last_completed.completed_at else None,
-        "last_sync_type": last_completed.sync_type if last_completed else None,
-        "last_sync_items": last_completed.items_processed if last_completed else None,
+        "last_sync": last_sync.completed_at.isoformat() if last_sync and last_sync.completed_at else None,
+        "last_sync_status": last_sync.status if last_sync else None,
+        "last_sync_items": last_sync.items_processed if last_sync else None,
+        "last_sync_error": last_sync.error_message if last_sync and last_sync.status == "failed" else None,
     }
 
 

@@ -10,13 +10,17 @@ export default function Profile() {
 
   useEffect(() => {
     if (syncStatus?.is_running) {
-      setPollInterval(2000);
+      setPollInterval(5000);
       setSyncing(true);
     } else if (syncing && !syncStatus?.is_running) {
       setPollInterval(0);
       setSyncing(false);
-      setSyncMessage('Sync completed!');
-      setTimeout(() => setSyncMessage(null), 5000);
+      if (syncStatus?.last_sync_status === 'failed') {
+        setSyncMessage('Sync paused — will resume on next run');
+      } else {
+        setSyncMessage('Sync completed!');
+      }
+      setTimeout(() => setSyncMessage(null), 8000);
     }
   }, [syncStatus?.is_running]);
 
@@ -24,7 +28,7 @@ export default function Profile() {
     if (!profile?.username) return;
     setSyncing(true);
     setSyncMessage(null);
-    setPollInterval(2000);
+    setPollInterval(5000);
     try {
       await triggerSync(profile.username);
     } catch {
@@ -92,11 +96,14 @@ export default function Profile() {
               {syncStatus.last_sync_items !== null && ` (${syncStatus.last_sync_items} items)`}
             </span>
           )}
+          {syncStatus?.last_sync_status === 'failed' && !syncing && (
+            <span className="text-yellow-500">Rate limited — will continue on next sync</span>
+          )}
           {!syncStatus?.last_sync && !syncing && (
             <span className="text-[#667788]">No sync yet — click Sync Now to get started</span>
           )}
           {syncMessage && (
-            <span className={syncMessage.includes('Failed') ? 'text-red-400' : 'text-[#00e054]'}>
+            <span className={syncMessage.includes('paused') ? 'text-yellow-500' : syncMessage.includes('Failed') ? 'text-red-400' : 'text-[#00e054]'}>
               {syncMessage}
             </span>
           )}
