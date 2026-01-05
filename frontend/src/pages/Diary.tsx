@@ -7,7 +7,7 @@ export default function Diary() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-pulse text-[#99aabb]">Loading diary...</div>
+        <div className="animate-pulse text-[var(--text-muted)]">Loading diary...</div>
       </div>
     );
   }
@@ -25,15 +25,15 @@ export default function Diary() {
   });
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <div>
-        <h2 className="text-2xl font-bold text-white">Diary</h2>
-        <p className="text-[#99aabb]">{entries.length} entries</p>
+        <h2 className="text-3xl font-display font-semibold text-[var(--text-primary)]">Diary</h2>
+        <p className="text-[var(--text-muted)] mt-1">{entries.length} entries</p>
       </div>
 
       {Object.entries(groupedEntries).map(([month, monthEntries]) => (
         <div key={month}>
-          <h3 className="text-lg font-semibold text-white mb-4 border-b border-[#2c3440] pb-2">
+          <h3 className="text-xl font-display font-medium text-[var(--text-primary)] mb-5 border-b border-cream-200 pb-3">
             {month}
           </h3>
           <div className="space-y-3">
@@ -43,13 +43,13 @@ export default function Diary() {
                 <Link
                   key={entry.id}
                   to={`/films/${entry.film.id}`}
-                  className="flex items-center gap-4 p-3 bg-[#1c2228] rounded-lg hover:bg-[#2c3440] transition-colors"
+                  className="flex items-center gap-5 p-4 bg-white rounded-lg border border-cream-200 hover:border-sage/30 hover:shadow-sm transition-all"
                 >
-                  <div className="w-12 text-center">
-                    <div className="text-2xl font-bold text-white">
+                  <div className="w-14 text-center">
+                    <div className="text-2xl font-mono font-medium text-[var(--text-primary)]">
                       {date?.getDate()}
                     </div>
-                    <div className="text-xs text-[#99aabb] uppercase">
+                    <div className="text-xs text-[var(--text-muted)] uppercase tracking-wide">
                       {date?.toLocaleDateString('en-US', { weekday: 'short' })}
                     </div>
                   </div>
@@ -58,27 +58,27 @@ export default function Diary() {
                       <img
                         src={entry.film.poster_url}
                         alt={entry.film.title}
-                        className="w-full h-full object-cover rounded"
+                        className="w-full h-full object-cover rounded shadow-sm"
                       />
                     ) : (
-                      <div className="w-full h-full bg-[#2c3440] rounded" />
+                      <div className="w-full h-full bg-cream-100 rounded" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-white font-medium truncate hover:text-[#00e054]">{entry.film.title}</p>
-                    <p className="text-sm text-[#99aabb]">
+                    <p className="text-[var(--text-primary)] font-medium truncate hover:text-rust transition-colors">{entry.film.title}</p>
+                    <p className="text-sm text-[var(--text-muted)]">
                       {entry.film.year}
                       {entry.rewatch && ' • Rewatch'}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
                     {entry.liked && (
-                      <span className="text-[#ff8000]" title="Liked">
+                      <span className="text-rust" title="Liked">
                         ♥
                       </span>
                     )}
                     {entry.rating && (
-                      <span className="text-[#00e054] font-medium">
+                      <span className="text-sage font-mono font-medium">
                         ★ {entry.rating}
                       </span>
                     )}

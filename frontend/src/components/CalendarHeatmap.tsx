@@ -4,18 +4,18 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 function getColor(count: number): string {
-  if (count === 0) return '#1c2228';
-  if (count === 1) return '#0e4429';
-  if (count === 2) return '#006d32';
-  if (count === 3) return '#26a641';
-  return '#00e054';
+  if (count === 0) return '#F5F0E8';  // cream-100
+  if (count === 1) return '#C5D9CB';  // very light sage
+  if (count === 2) return '#9BBB9F';  // light sage
+  if (count === 3) return '#7A9B84';  // sage-light
+  return '#5B7C65';                    // sage
 }
 
 export default function CalendarHeatmap() {
   const { data, loading } = useCalendarData();
 
   if (loading) {
-    return <div className="h-32 animate-pulse bg-[#2c3440] rounded" />;
+    return <div className="h-32 animate-pulse bg-cream-100 rounded" />;
   }
 
   const countMap = new Map(data.map(d => [d.date, d.count]));
@@ -70,8 +70,8 @@ export default function CalendarHeatmap() {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <p className="text-sm text-[#99aabb]">{totalFilms} films in the last year</p>
-        <div className="flex items-center gap-2 text-xs text-[#99aabb]">
+        <p className="text-sm text-[var(--text-muted)]">{totalFilms} films in the last year</p>
+        <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
           <span>Less</span>
           <div className="flex gap-1">
             {[0, 1, 2, 3, 4].map(i => (
@@ -92,7 +92,7 @@ export default function CalendarHeatmap() {
             {monthLabels.map((m, i) => (
               <div
                 key={i}
-                className="text-xs text-[#99aabb]"
+                className="text-xs text-[var(--text-muted)]"
                 style={{
                   marginLeft: i === 0 ? m.weekIndex * 14 : (m.weekIndex - monthLabels[i - 1].weekIndex - 1) * 14,
                   width: 28,
@@ -106,7 +106,7 @@ export default function CalendarHeatmap() {
           <div className="flex gap-1">
             <div className="flex flex-col gap-1 mr-1">
               {DAYS.map((day, i) => (
-                <div key={day} className="h-3 text-xs text-[#99aabb] flex items-center">
+                <div key={day} className="h-3 text-xs text-[var(--text-muted)] flex items-center">
                   {i % 2 === 1 ? day.charAt(0) : ''}
                 </div>
               ))}
@@ -117,7 +117,7 @@ export default function CalendarHeatmap() {
                 {week.map((day, dayIndex) => (
                   <div
                     key={dayIndex}
-                    className="w-3 h-3 rounded-sm transition-colors hover:ring-1 hover:ring-white/30"
+                    className="w-3 h-3 rounded-sm transition-colors hover:ring-1 hover:ring-sage/50"
                     style={{
                       backgroundColor: day.count < 0 ? 'transparent' : getColor(day.count),
                     }}

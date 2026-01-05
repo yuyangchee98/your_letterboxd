@@ -1,20 +1,38 @@
+/* Typography - Distinctive serif for headings, clean sans for body */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 :root {
-  --lb-dark: #14181c;
-  --lb-darker: #0d1114;
-  --lb-card: #1c2228;
-  --lb-border: #2c3440;
-  --lb-green: #00e054;
-  --lb-green-dark: #00c04a;
-  --lb-blue: #40bcf4;
-  --lb-orange: #ff8000;
-  --lb-text: #99aabb;
-  --lb-text-light: #fff;
+  /* Backgrounds */
+  --bg-cream: #FAF7F2;
+  --bg-white: #FFFFFF;
+  --bg-warm: #F5F0E8;
+  --bg-highlight: #F5E6D3;
+
+  /* Text */
+  --text-primary: #1A1A1A;
+  --text-body: #3D3D3D;
+  --text-muted: #6B6B6B;
+  --text-subtle: #9A9A9A;
+
+  /* Accents */
+  --accent-rust: #C45D3E;
+  --accent-rust-light: #D4745A;
+  --accent-sage: #5B7C65;
+  --accent-sage-light: #7A9B84;
+  --accent-gold: #B8860B;
+  --accent-ink: #2C3E50;
+
+  /* Borders & Dividers */
+  --border-light: #E8E4DC;
+  --border-medium: #D4CFC4;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 * {
@@ -24,21 +42,39 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: var(--lb-dark);
-  color: var(--lb-text-light);
+  font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-cream);
+  color: var(--text-body);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Fraunces', Georgia, serif;
+  color: var(--text-primary);
+}
+
 a {
-  color: var(--lb-blue);
+  color: var(--accent-ink);
   text-decoration: none;
 }
 
 a:hover {
-  text-decoration: underline;
+  color: var(--accent-rust);
+}
+
+/* Utility classes for fonts */
+.font-display {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+.font-body {
+  font-family: 'Source Sans 3', sans-serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
 }
 
 ::-webkit-scrollbar {
@@ -47,14 +83,14 @@ a:hover {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--lb-darker);
+  background: var(--bg-warm);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--lb-border);
+  background: var(--border-medium);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--lb-text);
+  background: var(--text-subtle);
 }

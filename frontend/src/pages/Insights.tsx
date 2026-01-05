@@ -23,42 +23,42 @@ function formatCurrency(num: number): string {
 
 function LegendModal({ onClose }: { onClose: () => void }) {
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50" onClick={onClose}>
+    <div className="fixed inset-0 bg-ink/50 flex items-center justify-center z-50" onClick={onClose}>
       <div
-        className="bg-[#1c2228] border border-[#2c3440] rounded-lg p-6 max-w-md mx-4"
+        className="bg-white border border-cream-200 rounded-xl p-6 max-w-md mx-4 shadow-lg"
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 className="text-lg font-bold text-white mb-4">Rating Personality Legend</h3>
+        <h3 className="text-lg font-display font-semibold text-[var(--text-primary)] mb-4">Rating Personality Legend</h3>
         <div className="space-y-4">
           <div>
-            <p className="text-[#99aabb] text-xs uppercase mb-2">Personality Types</p>
+            <p className="text-[var(--text-muted)] text-xs uppercase tracking-wide mb-2">Personality Types</p>
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <span className="w-3 h-3 rounded-full bg-[#ff8000]"></span>
-                <span className="text-[#ff8000] font-medium">The Tough Critic</span>
-                <span className="text-[#99aabb] text-sm">(&lt; -0.3)</span>
+                <span className="w-3 h-3 rounded-full bg-rust"></span>
+                <span className="text-rust font-medium">The Tough Critic</span>
+                <span className="text-[var(--text-muted)] text-sm">(&lt; -0.3)</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="w-3 h-3 rounded-full bg-[#40bcf4]"></span>
-                <span className="text-[#40bcf4] font-medium">The Balanced Judge</span>
-                <span className="text-[#99aabb] text-sm">(-0.3 to +0.3)</span>
+                <span className="w-3 h-3 rounded-full bg-ink"></span>
+                <span className="text-ink font-medium">The Balanced Judge</span>
+                <span className="text-[var(--text-muted)] text-sm">(-0.3 to +0.3)</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="w-3 h-3 rounded-full bg-[#00e054]"></span>
-                <span className="text-[#00e054] font-medium">The Generous Viewer</span>
-                <span className="text-[#99aabb] text-sm">(&gt; +0.3)</span>
+                <span className="w-3 h-3 rounded-full bg-sage"></span>
+                <span className="text-sage font-medium">The Generous Viewer</span>
+                <span className="text-[var(--text-muted)] text-sm">(&gt; +0.3)</span>
               </div>
             </div>
           </div>
-          <div className="pt-4 border-t border-[#2c3440]">
-            <p className="text-[#99aabb] text-sm">
+          <div className="pt-4 border-t border-cream-200">
+            <p className="text-[var(--text-muted)] text-sm">
               The gap is calculated as your average rating minus the Letterboxd community average.
             </p>
           </div>
         </div>
         <button
           onClick={onClose}
-          className="mt-6 w-full py-2 bg-[#2c3440] hover:bg-[#3c4450] text-white rounded transition-colors"
+          className="mt-6 w-full py-2 bg-cream-100 hover:bg-cream-200 text-[var(--text-primary)] rounded-lg transition-colors"
         >
           Close
         </button>
@@ -82,26 +82,26 @@ function FilmTable({ films, gapColor }: { films: RatedFilm[]; gapColor: string }
     <div className="mt-4 overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-[#2c3440]">
-            <th className="text-left py-2 px-3 text-[#99aabb] font-medium">Title</th>
-            <th className="text-center py-2 px-3 text-[#99aabb] font-medium">Year</th>
-            <th className="text-center py-2 px-3 text-[#99aabb] font-medium">You</th>
-            <th className="text-center py-2 px-3 text-[#99aabb] font-medium">LB</th>
-            <th className="text-center py-2 px-3 text-[#99aabb] font-medium">Gap</th>
+          <tr className="border-b border-cream-200">
+            <th className="text-left py-2 px-3 text-[var(--text-muted)] font-medium">Title</th>
+            <th className="text-center py-2 px-3 text-[var(--text-muted)] font-medium">Year</th>
+            <th className="text-center py-2 px-3 text-[var(--text-muted)] font-medium">You</th>
+            <th className="text-center py-2 px-3 text-[var(--text-muted)] font-medium">LB</th>
+            <th className="text-center py-2 px-3 text-[var(--text-muted)] font-medium">Gap</th>
           </tr>
         </thead>
         <tbody>
           {films.map((film) => (
-            <tr key={film.film_id} className="border-b border-[#2c3440]/50 hover:bg-[#2c3440]/30">
+            <tr key={film.film_id} className="border-b border-cream-100 hover:bg-cream-50">
               <td className="py-2 px-3">
-                <Link to={`/films/${film.film_id}`} className="text-white hover:text-[#00e054]">
+                <Link to={`/films/${film.film_id}`} className="text-[var(--text-primary)] hover:text-rust transition-colors">
                   {film.title}
                 </Link>
               </td>
-              <td className="text-center py-2 px-3 text-[#99aabb]">{film.year}</td>
-              <td className="text-center py-2 px-3 text-white">{film.user_rating}</td>
-              <td className="text-center py-2 px-3 text-[#99aabb]">{film.letterboxd_rating}</td>
-              <td className={`text-center py-2 px-3 font-medium ${gapColor}`}>
+              <td className="text-center py-2 px-3 text-[var(--text-muted)]">{film.year}</td>
+              <td className="text-center py-2 px-3 text-[var(--text-primary)] font-mono">{film.user_rating}</td>
+              <td className="text-center py-2 px-3 text-[var(--text-muted)] font-mono">{film.letterboxd_rating}</td>
+              <td className={`text-center py-2 px-3 font-mono font-medium ${gapColor}`}>
                 {film.gap > 0 ? '+' : ''}{film.gap.toFixed(1)}
               </td>
             </tr>
@@ -121,7 +121,7 @@ export default function Insights() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-pulse text-[#99aabb]">Analyzing your taste...</div>
+        <div className="animate-pulse text-[var(--text-muted)]">Analyzing your taste...</div>
       </div>
     );
   }
@@ -129,7 +129,7 @@ export default function Insights() {
   if (!data) {
     return (
       <div className="text-center py-12">
-        <Text>Failed to load insights</Text>
+        <Text className="text-[var(--text-muted)]">Failed to load insights</Text>
       </div>
     );
   }
@@ -153,17 +153,17 @@ export default function Insights() {
     harsh: {
       title: 'The Tough Critic',
       description: 'You hold films to a higher standard than most.',
-      color: 'text-[#ff8000]',
+      color: 'text-rust',
     },
     generous: {
       title: 'The Generous Viewer',
       description: 'You tend to find more joy in films than the average viewer.',
-      color: 'text-[#00e054]',
+      color: 'text-sage',
     },
     balanced: {
       title: 'The Balanced Judge',
       description: 'Your ratings align closely with the Letterboxd community.',
-      color: 'text-[#40bcf4]',
+      color: 'text-ink',
     },
   };
 
@@ -199,53 +199,53 @@ export default function Insights() {
     }));
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Insights</h1>
-        <p className="text-[#99aabb]">
-          What you <span className="text-[#00e054] font-medium">like</span> — not just what you watch
+        <h1 className="text-3xl font-display font-semibold text-[var(--text-primary)] mb-2">Insights</h1>
+        <p className="text-[var(--text-muted)]">
+          What you <span className="text-sage font-medium">like</span> — not just what you watch
         </p>
       </div>
 
-      <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
-        <Title className="text-white">Your Rating Personality</Title>
+      <Card className="bg-white border-cream-200 ring-0 shadow-sm">
+        <Title className="text-[var(--text-primary)] font-display">Your Rating Personality</Title>
         <div className="mt-6 text-center">
           <Metric className={personality.color}>{personality.title}</Metric>
-          <Text className="text-[#99aabb] mt-2">{personality.description}</Text>
+          <Text className="text-[var(--text-muted)] mt-2">{personality.description}</Text>
 
           <div className="mt-6 max-w-md mx-auto">
             <Flex className="mb-2">
-              <Text className="text-[#ff8000]">Harsh</Text>
-              <Text className="text-[#99aabb]">Balanced</Text>
-              <Text className="text-[#00e054]">Generous</Text>
+              <Text className="text-rust">Harsh</Text>
+              <Text className="text-[var(--text-muted)]">Balanced</Text>
+              <Text className="text-sage">Generous</Text>
             </Flex>
-            <ProgressBar value={progressValue} color="emerald" className="h-3" />
+            <ProgressBar value={progressValue} color="green" className="h-3" />
           </div>
 
           <div className="mt-6 grid grid-cols-3 gap-4 max-w-lg mx-auto">
             <div>
-              <Text className="text-[#99aabb] text-xs uppercase">Your Average</Text>
-              <p className="text-2xl font-bold text-white">{rating_stats.avg_user_rating}</p>
+              <Text className="text-[var(--text-muted)] text-xs uppercase tracking-wide">Your Average</Text>
+              <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{rating_stats.avg_user_rating}</p>
             </div>
             <div>
-              <Text className="text-[#99aabb] text-xs uppercase">Difference</Text>
-              <p className={`text-2xl font-bold ${rating_stats.avg_gap >= 0 ? 'text-[#00e054]' : 'text-[#ff8000]'}`}>
+              <Text className="text-[var(--text-muted)] text-xs uppercase tracking-wide">Difference</Text>
+              <p className={`text-2xl font-mono font-medium ${rating_stats.avg_gap >= 0 ? 'text-sage' : 'text-rust'}`}>
                 {rating_stats.avg_gap >= 0 ? '+' : ''}{rating_stats.avg_gap}
               </p>
             </div>
             <div>
-              <Text className="text-[#99aabb] text-xs uppercase">LB Average</Text>
-              <p className="text-2xl font-bold text-white">{rating_stats.avg_letterboxd_rating}</p>
+              <Text className="text-[var(--text-muted)] text-xs uppercase tracking-wide">LB Average</Text>
+              <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{rating_stats.avg_letterboxd_rating}</p>
             </div>
           </div>
 
-          <Text className="text-[#99aabb] mt-4">
+          <Text className="text-[var(--text-muted)] mt-4">
             Based on {rating_stats.total_rated} rated films
           </Text>
 
           <button
             onClick={() => setShowLegend(true)}
-            className="mt-4 text-[#40bcf4] hover:text-[#60dcff] text-sm"
+            className="mt-4 text-ink hover:text-rust text-sm transition-colors"
           >
             What does this mean?
           </button>
@@ -256,27 +256,27 @@ export default function Insights() {
 
       {financial && (
         <div>
-          <h2 className="text-2xl font-bold text-white mb-6">Box Office Power</h2>
+          <h2 className="text-2xl font-display font-semibold text-[var(--text-primary)] mb-6">Box Office Power</h2>
           <Grid numItemsMd={2} numItemsLg={4} className="gap-6 mb-6">
-            <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
-              <Text className="text-[#99aabb]">Total Budget Watched</Text>
-              <Metric className="text-[#00e054]">{formatCurrency(financial.total_budget)}</Metric>
-              <Text className="text-[#99aabb] mt-2">Combined production budgets</Text>
+            <Card className="bg-white border-cream-200 ring-0 shadow-sm">
+              <Text className="text-[var(--text-muted)]">Total Budget Watched</Text>
+              <Metric className="text-sage">{formatCurrency(financial.total_budget)}</Metric>
+              <Text className="text-[var(--text-muted)] mt-2">Combined production budgets</Text>
             </Card>
-            <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
-              <Text className="text-[#99aabb]">Total Box Office</Text>
-              <Metric className="text-[#f5c518]">{formatCurrency(financial.total_revenue)}</Metric>
-              <Text className="text-[#99aabb] mt-2">Combined worldwide revenue</Text>
+            <Card className="bg-white border-cream-200 ring-0 shadow-sm">
+              <Text className="text-[var(--text-muted)]">Total Box Office</Text>
+              <Metric className="text-gold">{formatCurrency(financial.total_revenue)}</Metric>
+              <Text className="text-[var(--text-muted)] mt-2">Combined worldwide revenue</Text>
             </Card>
-            <Card className="bg-[#1c2228] border-[#2c3440] ring-0 col-span-2">
-              <Title className="text-white">Budget Distribution</Title>
-              <Text className="text-[#99aabb]">What kind of films do you watch?</Text>
+            <Card className="bg-white border-cream-200 ring-0 shadow-sm col-span-2">
+              <Title className="text-[var(--text-primary)]">Budget Distribution</Title>
+              <Text className="text-[var(--text-muted)]">What kind of films do you watch?</Text>
               <BarChart
                 className="mt-4 h-32"
                 data={financial.budget_distribution}
                 index="category"
                 categories={['count']}
-                colors={['emerald']}
+                colors={['green']}
                 showLegend={false}
                 showGridLines={false}
                 yAxisWidth={40}
@@ -285,47 +285,47 @@ export default function Insights() {
           </Grid>
 
           <Grid numItemsMd={2} className="gap-6">
-            <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
-              <Title className="text-white">Biggest Budget Films</Title>
-              <Text className="text-[#99aabb]">Most expensive productions you've watched</Text>
+            <Card className="bg-white border-cream-200 ring-0 shadow-sm">
+              <Title className="text-[var(--text-primary)]">Biggest Budget Films</Title>
+              <Text className="text-[var(--text-muted)]">Most expensive productions you've watched</Text>
               <div className="mt-4 space-y-3">
                 {financial.top_budget?.slice(0, 5).map((film: any) => (
                   <div key={film.film_id} className="flex items-center gap-3">
-                    <div className="w-10 h-14 bg-[#2c3440] rounded overflow-hidden flex-shrink-0">
+                    <div className="w-10 h-14 bg-cream-100 rounded overflow-hidden flex-shrink-0">
                       {film.poster_url && (
                         <img src={film.poster_url} alt={film.title} className="w-full h-full object-cover" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <Link to={`/films/${film.film_id}`} className="text-white hover:text-[#00e054] text-sm truncate block">
+                      <Link to={`/films/${film.film_id}`} className="text-[var(--text-primary)] hover:text-sage text-sm truncate block">
                         {film.title}
                       </Link>
-                      <Text className="text-[#99aabb] text-xs">{film.year}</Text>
+                      <Text className="text-[var(--text-muted)] text-xs">{film.year}</Text>
                     </div>
-                    <Text className="text-[#00e054] font-medium">{formatCurrency(film.budget)}</Text>
+                    <Text className="text-sage font-medium">{formatCurrency(film.budget)}</Text>
                   </div>
                 ))}
               </div>
             </Card>
 
-            <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
-              <Title className="text-white">Best ROI Films</Title>
-              <Text className="text-[#99aabb]">Most profitable films you've watched</Text>
+            <Card className="bg-white border-cream-200 ring-0 shadow-sm">
+              <Title className="text-[var(--text-primary)]">Best ROI Films</Title>
+              <Text className="text-[var(--text-muted)]">Most profitable films you've watched</Text>
               <div className="mt-4 space-y-3">
                 {financial.best_roi?.slice(0, 5).map((film: any) => (
                   <div key={film.film_id} className="flex items-center gap-3">
-                    <div className="w-10 h-14 bg-[#2c3440] rounded overflow-hidden flex-shrink-0">
+                    <div className="w-10 h-14 bg-cream-100 rounded overflow-hidden flex-shrink-0">
                       {film.poster_url && (
                         <img src={film.poster_url} alt={film.title} className="w-full h-full object-cover" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <Link to={`/films/${film.film_id}`} className="text-white hover:text-[#00e054] text-sm truncate block">
+                      <Link to={`/films/${film.film_id}`} className="text-[var(--text-primary)] hover:text-sage text-sm truncate block">
                         {film.title}
                       </Link>
-                      <Text className="text-[#99aabb] text-xs">{formatCurrency(film.budget)} → {formatCurrency(film.revenue)}</Text>
+                      <Text className="text-[var(--text-muted)] text-xs">{formatCurrency(film.budget)} → {formatCurrency(film.revenue)}</Text>
                     </div>
-                    <Text className="text-[#00e054] font-bold">+{film.roi}%</Text>
+                    <Text className="text-sage font-bold">+{film.roi}%</Text>
                   </div>
                 ))}
               </div>
@@ -335,15 +335,15 @@ export default function Insights() {
       )}
 
       {genreChartData.length > 0 && (
-        <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
-          <Title className="text-white">Your Genre Preferences</Title>
-          <Text className="text-[#99aabb]">Average rating by genre (min 5 films)</Text>
+        <Card className="bg-white border-cream-200 ring-0 shadow-sm">
+          <Title className="text-[var(--text-primary)]">Your Genre Preferences</Title>
+          <Text className="text-[var(--text-muted)]">Average rating by genre (min 5 films)</Text>
           <BarChart
             className="mt-6 h-72"
             data={genreChartData}
             index="name"
             categories={['Avg Rating']}
-            colors={['cyan']}
+            colors={['blue']}
             showLegend={false}
             showGridLines={false}
             yAxisWidth={48}
@@ -355,15 +355,15 @@ export default function Insights() {
 
       <Grid numItemsMd={2} className="gap-6">
         {directorChartData.length > 0 && (
-          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
-            <Title className="text-white">Directors You Rate Highest</Title>
-            <Text className="text-[#99aabb]">Average rating (2+ films)</Text>
+          <Card className="bg-white border-cream-200 ring-0 shadow-sm">
+            <Title className="text-[var(--text-primary)]">Directors You Rate Highest</Title>
+            <Text className="text-[var(--text-muted)]">Average rating (2+ films)</Text>
             <BarChart
               className="mt-4 h-64"
               data={directorChartData}
               index="name"
               categories={['Avg Rating']}
-              colors={['violet']}
+              colors={['rose']}
               showLegend={false}
               showGridLines={false}
               yAxisWidth={48}
@@ -374,9 +374,9 @@ export default function Insights() {
         )}
 
         {actorChartData.length > 0 && (
-          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
-            <Title className="text-white">Actors You Rate Highest</Title>
-            <Text className="text-[#99aabb]">Average rating (3+ films)</Text>
+          <Card className="bg-white border-cream-200 ring-0 shadow-sm">
+            <Title className="text-[var(--text-primary)]">Actors You Rate Highest</Title>
+            <Text className="text-[var(--text-muted)]">Average rating (3+ films)</Text>
             <BarChart
               className="mt-4 h-64"
               data={actorChartData}
@@ -395,9 +395,9 @@ export default function Insights() {
 
       <Grid numItemsMd={2} className="gap-6">
         {certification_breakdown && certification_breakdown.length > 0 && (
-          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
-            <Title className="text-white">Content Ratings</Title>
-            <Text className="text-[#99aabb]">Distribution of film certifications</Text>
+          <Card className="bg-white border-cream-200 ring-0 shadow-sm">
+            <Title className="text-[var(--text-primary)]">Content Ratings</Title>
+            <Text className="text-[var(--text-muted)]">Distribution of film certifications</Text>
             <DonutChart
               className="mt-6 h-52"
               data={certification_breakdown}
@@ -411,28 +411,28 @@ export default function Insights() {
         )}
 
         {keyword_ratings && (keyword_ratings.best?.length > 0 || keyword_ratings.worst?.length > 0) && (
-          <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
-            <Title className="text-white">Theme Preferences</Title>
-            <Text className="text-[#99aabb]">Keywords you rate highest vs lowest (min 3 films)</Text>
+          <Card className="bg-white border-cream-200 ring-0 shadow-sm">
+            <Title className="text-[var(--text-primary)]">Theme Preferences</Title>
+            <Text className="text-[var(--text-muted)]">Keywords you rate highest vs lowest (min 3 films)</Text>
             <div className="mt-4 grid grid-cols-2 gap-4">
               <div>
-                <Text className="text-[#00e054] font-medium mb-2">Themes you love</Text>
+                <Text className="text-sage font-medium mb-2">Themes you love</Text>
                 <div className="space-y-1">
                   {keyword_ratings.best?.slice(0, 8).map((kw: any) => (
                     <div key={kw.keyword} className="flex justify-between text-sm">
-                      <span className="text-white truncate">{kw.keyword}</span>
-                      <span className="text-[#00e054] font-medium ml-2">★ {kw.avg_rating}</span>
+                      <span className="text-[var(--text-primary)] truncate">{kw.keyword}</span>
+                      <span className="text-sage font-medium ml-2">★ {kw.avg_rating}</span>
                     </div>
                   ))}
                 </div>
               </div>
               <div>
-                <Text className="text-[#ff8000] font-medium mb-2">Themes you dislike</Text>
+                <Text className="text-rust font-medium mb-2">Themes you dislike</Text>
                 <div className="space-y-1">
                   {keyword_ratings.worst?.slice(0, 8).map((kw: any) => (
                     <div key={kw.keyword} className="flex justify-between text-sm">
-                      <span className="text-white truncate">{kw.keyword}</span>
-                      <span className="text-[#ff8000] font-medium ml-2">★ {kw.avg_rating}</span>
+                      <span className="text-[var(--text-primary)] truncate">{kw.keyword}</span>
+                      <span className="text-rust font-medium ml-2">★ {kw.avg_rating}</span>
                     </div>
                   ))}
                 </div>
@@ -443,15 +443,15 @@ export default function Insights() {
       </Grid>
 
       {rating_trends && rating_trends.length > 1 && (
-        <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
-          <Title className="text-white">Your Rating Trends</Title>
-          <Text className="text-[#99aabb]">How your ratings have changed over the years</Text>
+        <Card className="bg-white border-cream-200 ring-0 shadow-sm">
+          <Title className="text-[var(--text-primary)]">Your Rating Trends</Title>
+          <Text className="text-[var(--text-muted)]">How your ratings have changed over the years</Text>
           <LineChart
             className="mt-6 h-64"
             data={rating_trends}
             index="year"
             categories={['avg_rating']}
-            colors={['emerald']}
+            colors={['green']}
             showLegend={false}
             showGridLines={false}
             yAxisWidth={40}
@@ -462,9 +462,9 @@ export default function Insights() {
       )}
 
       {decade_ratings && decade_ratings.length > 0 && (
-        <Card className="bg-[#1c2228] border-[#2c3440] ring-0">
-          <Title className="text-white">Decade Preferences</Title>
-          <Text className="text-[#99aabb]">Which era of cinema do you rate highest?</Text>
+        <Card className="bg-white border-cream-200 ring-0 shadow-sm">
+          <Title className="text-[var(--text-primary)]">Decade Preferences</Title>
+          <Text className="text-[var(--text-muted)]">Which era of cinema do you rate highest?</Text>
           <BarChart
             className="mt-6 h-64"
             data={decade_ratings.map((d: any) => ({ decade: d.decade, "Avg Rating": d.avg_rating, Films: d.count }))}
@@ -481,15 +481,15 @@ export default function Insights() {
 
       {collections && collections.length > 0 && (
         <div>
-          <h2 className="text-2xl font-bold text-white mb-2">Your Franchises</h2>
-          <p className="text-[#99aabb] mb-6">Collections and series you've explored</p>
+          <h2 className="text-2xl font-display font-semibold text-[var(--text-primary)] mb-2">Your Franchises</h2>
+          <p className="text-[var(--text-muted)] mb-6">Collections and series you've explored</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {collections.slice(0, 9).map((coll: any) => (
-              <Card key={coll.name} className="bg-[#1c2228] border-[#2c3440] ring-0">
+              <Card key={coll.name} className="bg-white border-cream-200 ring-0 shadow-sm">
                 <div className="flex justify-between items-start">
                   <div className="flex-1 min-w-0">
-                    <Title className="text-white text-base truncate">{coll.name.replace(' Collection', '')}</Title>
-                    <Text className="text-[#99aabb]">
+                    <Title className="text-[var(--text-primary)] text-base truncate">{coll.name.replace(' Collection', '')}</Title>
+                    <Text className="text-[var(--text-muted)]">
                       {coll.count} films watched
                       {coll.avg_rating && ` · Avg ★ ${coll.avg_rating}`}
                     </Text>
@@ -499,14 +499,14 @@ export default function Insights() {
                   {coll.films.slice(0, 5).map((film: any) => (
                     <span
                       key={film.title}
-                      className="text-xs px-2 py-0.5 bg-[#2c3440] text-[#99aabb] rounded"
+                      className="text-xs px-2 py-0.5 bg-cream-100 text-[var(--text-muted)] rounded"
                       title={`${film.title} (${film.year})${film.rating ? ` - ★${film.rating}` : ''}`}
                     >
                       {film.title.length > 20 ? film.title.slice(0, 20) + '...' : film.title}
                     </span>
                   ))}
                   {coll.films.length > 5 && (
-                    <span className="text-xs px-2 py-0.5 text-[#99aabb]">
+                    <span className="text-xs px-2 py-0.5 text-[var(--text-muted)]">
                       +{coll.films.length - 5} more
                     </span>
                   )}
@@ -519,8 +519,8 @@ export default function Insights() {
 
       {topGems.length > 0 && (
         <div>
-          <h2 className="text-2xl font-bold text-white mb-2">Your Hidden Gems</h2>
-          <p className="text-[#99aabb] mb-6">
+          <h2 className="text-2xl font-display font-semibold text-[var(--text-primary)] mb-2">Your Hidden Gems</h2>
+          <p className="text-[var(--text-muted)] mb-6">
             {underrated_by_letterboxd.length} films you loved more than most people
           </p>
 
@@ -528,7 +528,7 @@ export default function Insights() {
             {topGems.map((film: RatedFilm) => (
               <Link to={`/films/${film.film_id}`} key={film.film_id} className="group">
                 <div className="relative">
-                  <div className="aspect-[2/3] bg-[#2c3440] rounded-lg overflow-hidden mb-2">
+                  <div className="aspect-[2/3] bg-cream-100 rounded-lg overflow-hidden mb-2">
                     {film.poster_url ? (
                       <img
                         src={film.poster_url}
@@ -536,7 +536,7 @@ export default function Insights() {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[#99aabb] text-xs text-center p-2">
+                      <div className="w-full h-full flex items-center justify-center text-[var(--text-muted)] text-xs text-center p-2">
                         {film.title}
                       </div>
                     )}
@@ -545,8 +545,8 @@ export default function Insights() {
                     +{film.gap.toFixed(1)}
                   </div>
                 </div>
-                <p className="text-sm text-white truncate">{film.title}</p>
-                <p className="text-xs text-[#99aabb]">
+                <p className="text-sm text-[var(--text-primary)] truncate">{film.title}</p>
+                <p className="text-xs text-[var(--text-muted)]">
                   You: {film.user_rating} vs LB: {film.letterboxd_rating}
                 </p>
               </Link>
@@ -557,14 +557,14 @@ export default function Insights() {
             <div className="mt-4">
               <button
                 onClick={() => setShowAllGems(!showAllGems)}
-                className="text-[#00e054] hover:text-[#00ff66] text-sm font-medium"
+                className="text-sage hover:text-sage-light text-sm font-medium"
               >
                 {showAllGems
                   ? 'Hide full list'
                   : `Show all ${underrated_by_letterboxd.length} hidden gems`}
               </button>
               {showAllGems && (
-                <FilmTable films={underrated_by_letterboxd} gapColor="text-[#00e054]" />
+                <FilmTable films={underrated_by_letterboxd} gapColor="text-sage" />
               )}
             </div>
           )}
@@ -573,8 +573,8 @@ export default function Insights() {
 
       {topUnpopular.length > 0 && (
         <div>
-          <h2 className="text-2xl font-bold text-white mb-2">Your Unpopular Opinions</h2>
-          <p className="text-[#99aabb] mb-6">
+          <h2 className="text-2xl font-display font-semibold text-[var(--text-primary)] mb-2">Your Unpopular Opinions</h2>
+          <p className="text-[var(--text-muted)] mb-6">
             {overrated_by_letterboxd.length} films others loved more than you
           </p>
 
@@ -582,7 +582,7 @@ export default function Insights() {
             {topUnpopular.map((film: RatedFilm) => (
               <Link to={`/films/${film.film_id}`} key={film.film_id} className="group">
                 <div className="relative">
-                  <div className="aspect-[2/3] bg-[#2c3440] rounded-lg overflow-hidden mb-2">
+                  <div className="aspect-[2/3] bg-cream-100 rounded-lg overflow-hidden mb-2">
                     {film.poster_url ? (
                       <img
                         src={film.poster_url}
@@ -590,7 +590,7 @@ export default function Insights() {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[#99aabb] text-xs text-center p-2">
+                      <div className="w-full h-full flex items-center justify-center text-[var(--text-muted)] text-xs text-center p-2">
                         {film.title}
                       </div>
                     )}
@@ -599,8 +599,8 @@ export default function Insights() {
                     {film.gap.toFixed(1)}
                   </div>
                 </div>
-                <p className="text-sm text-white truncate">{film.title}</p>
-                <p className="text-xs text-[#99aabb]">
+                <p className="text-sm text-[var(--text-primary)] truncate">{film.title}</p>
+                <p className="text-xs text-[var(--text-muted)]">
                   You: {film.user_rating} vs LB: {film.letterboxd_rating}
                 </p>
               </Link>
@@ -611,14 +611,14 @@ export default function Insights() {
             <div className="mt-4">
               <button
                 onClick={() => setShowAllUnpopular(!showAllUnpopular)}
-                className="text-[#ff8000] hover:text-[#ff9933] text-sm font-medium"
+                className="text-rust hover:text-rust-light text-sm font-medium"
               >
                 {showAllUnpopular
                   ? 'Hide full list'
                   : `Show all ${overrated_by_letterboxd.length} unpopular opinions`}
               </button>
               {showAllUnpopular && (
-                <FilmTable films={overrated_by_letterboxd} gapColor="text-[#ff8000]" />
+                <FilmTable films={overrated_by_letterboxd} gapColor="text-rust" />
               )}
             </div>
           )}

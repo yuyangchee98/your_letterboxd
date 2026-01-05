@@ -41,7 +41,7 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-pulse text-[#99aabb]">Loading profile...</div>
+        <div className="animate-pulse text-[var(--text-muted)]">Loading profile...</div>
       </div>
     );
   }
@@ -49,31 +49,31 @@ export default function Profile() {
   if (!profile) {
     return (
       <div className="text-center py-12">
-        <p className="text-[#99aabb]">No profile found</p>
+        <p className="text-[var(--text-muted)]">No profile found</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
-      <div className="bg-[#1c2228] rounded-lg p-6">
+    <div className="space-y-10">
+      <div className="bg-white rounded-xl p-6 border border-cream-200 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-lg font-semibold text-white">Sync</h2>
-            <p className="text-[#99aabb] text-sm mt-1">
+            <h2 className="text-xl font-display font-semibold text-[var(--text-primary)]">Sync</h2>
+            <p className="text-[var(--text-muted)] text-sm mt-1">
               Fetches your latest films, ratings, and diary entries from Letterboxd, then enriches with TMDB data.
             </p>
-            <p className="text-[#667788] text-xs mt-1">
+            <p className="text-[var(--text-subtle)] text-xs mt-1">
               Syncs automatically once per day. Initial sync may take a few minutes depending on your library size. Sync can safely resume if interrupted.
             </p>
           </div>
           <button
             onClick={handleSync}
             disabled={syncing}
-            className={`px-4 py-2 rounded font-medium transition-colors ${
+            className={`px-5 py-2.5 rounded-lg font-medium transition-colors ${
               syncing
-                ? 'bg-[#2c3440] text-[#99aabb] cursor-not-allowed'
-                : 'bg-[#00e054] text-black hover:bg-[#00c049]'
+                ? 'bg-cream-100 text-[var(--text-muted)] cursor-not-allowed'
+                : 'bg-sage text-white hover:bg-sage-dark'
             }`}
           >
             {syncing ? (
@@ -91,45 +91,45 @@ export default function Profile() {
         </div>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
           {syncStatus?.last_sync && (
-            <span className="text-[#99aabb]">
+            <span className="text-[var(--text-muted)]">
               Last synced: {new Date(syncStatus.last_sync).toLocaleString()}
               {syncStatus.last_sync_items !== null && ` (${syncStatus.last_sync_items} items)`}
             </span>
           )}
           {syncStatus?.last_sync_status === 'failed' && !syncing && (
-            <span className="text-yellow-500">Rate limited — will continue on next sync</span>
+            <span className="text-gold">Rate limited — will continue on next sync</span>
           )}
           {!syncStatus?.last_sync && !syncing && (
-            <span className="text-[#667788]">No sync yet — click Sync Now to get started</span>
+            <span className="text-[var(--text-subtle)]">No sync yet — click Sync Now to get started</span>
           )}
           {syncMessage && (
-            <span className={syncMessage.includes('paused') ? 'text-yellow-500' : syncMessage.includes('Failed') ? 'text-red-400' : 'text-[#00e054]'}>
+            <span className={syncMessage.includes('paused') ? 'text-gold' : syncMessage.includes('Failed') ? 'text-rust' : 'text-sage'}>
               {syncMessage}
             </span>
           )}
         </div>
       </div>
 
-      <div className="bg-[#1c2228] rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-white">
+      <div className="bg-white rounded-xl p-6 border border-cream-200 shadow-sm">
+        <h1 className="text-2xl font-display font-semibold text-[var(--text-primary)]">
           {profile.display_name || profile.username}
         </h1>
-        <p className="text-[#99aabb]">@{profile.username}</p>
+        <p className="text-[var(--text-muted)]">@{profile.username}</p>
 
         {profile.bio && (
-          <p className="text-[#ddd] mt-4">{profile.bio}</p>
+          <p className="text-[var(--text-body)] mt-4 leading-relaxed">{profile.bio}</p>
         )}
 
         <div className="flex gap-6 mt-4 text-sm">
           {profile.location && (
-            <span className="text-[#99aabb]">{profile.location}</span>
+            <span className="text-[var(--text-muted)]">{profile.location}</span>
           )}
           {profile.website && (
             <a
               href={profile.website}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#00e054] hover:underline"
+              className="text-sage hover:text-rust transition-colors"
             >
               {profile.website.replace(/^https?:\/\//, '')}
             </a>
@@ -139,36 +139,36 @@ export default function Profile() {
 
       {profile.stats && Object.keys(profile.stats).length > 0 && (
         <div>
-          <h2 className="text-lg font-semibold text-white mb-4">Letterboxd Stats</h2>
+          <h2 className="text-xl font-display font-semibold text-[var(--text-primary)] mb-4">Letterboxd Stats</h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {profile.stats.films !== undefined && (
-              <div className="bg-[#1c2228] p-4 rounded-lg">
-                <p className="text-2xl font-bold text-white">{profile.stats.films}</p>
-                <p className="text-[#99aabb] text-sm">Films</p>
+              <div className="bg-white p-5 rounded-xl border border-cream-200 shadow-sm">
+                <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{profile.stats.films}</p>
+                <p className="text-[var(--text-muted)] text-sm">Films</p>
               </div>
             )}
             {profile.stats.this_year !== undefined && (
-              <div className="bg-[#1c2228] p-4 rounded-lg">
-                <p className="text-2xl font-bold text-white">{profile.stats.this_year}</p>
-                <p className="text-[#99aabb] text-sm">This Year</p>
+              <div className="bg-white p-5 rounded-xl border border-cream-200 shadow-sm">
+                <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{profile.stats.this_year}</p>
+                <p className="text-[var(--text-muted)] text-sm">This Year</p>
               </div>
             )}
             {profile.stats.lists !== undefined && (
-              <div className="bg-[#1c2228] p-4 rounded-lg">
-                <p className="text-2xl font-bold text-white">{profile.stats.lists}</p>
-                <p className="text-[#99aabb] text-sm">Lists</p>
+              <div className="bg-white p-5 rounded-xl border border-cream-200 shadow-sm">
+                <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{profile.stats.lists}</p>
+                <p className="text-[var(--text-muted)] text-sm">Lists</p>
               </div>
             )}
             {profile.stats.following !== undefined && (
-              <div className="bg-[#1c2228] p-4 rounded-lg">
-                <p className="text-2xl font-bold text-white">{profile.stats.following}</p>
-                <p className="text-[#99aabb] text-sm">Following</p>
+              <div className="bg-white p-5 rounded-xl border border-cream-200 shadow-sm">
+                <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{profile.stats.following}</p>
+                <p className="text-[var(--text-muted)] text-sm">Following</p>
               </div>
             )}
             {profile.stats.followers !== undefined && (
-              <div className="bg-[#1c2228] p-4 rounded-lg">
-                <p className="text-2xl font-bold text-white">{profile.stats.followers}</p>
-                <p className="text-[#99aabb] text-sm">Followers</p>
+              <div className="bg-white p-5 rounded-xl border border-cream-200 shadow-sm">
+                <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{profile.stats.followers}</p>
+                <p className="text-[var(--text-muted)] text-sm">Followers</p>
               </div>
             )}
           </div>
@@ -177,12 +177,12 @@ export default function Profile() {
 
       {profile.favorites && profile.favorites.length > 0 && (
         <div>
-          <h2 className="text-lg font-semibold text-white mb-4">Favorite Films</h2>
+          <h2 className="text-xl font-display font-semibold text-[var(--text-primary)] mb-4">Favorite Films</h2>
           <div className="flex flex-wrap gap-2">
             {profile.favorites.map((slug: string) => (
               <span
                 key={slug}
-                className="px-3 py-1 bg-[#2c3440] text-[#99aabb] text-sm rounded"
+                className="px-3 py-1.5 bg-cream-100 text-[var(--text-muted)] text-sm rounded-full border border-cream-200"
               >
                 {slug.replace(/-/g, ' ')}
               </span>
@@ -196,7 +196,7 @@ export default function Profile() {
           href={`https://letterboxd.com/${profile.username}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#00e054] hover:underline"
+          className="text-sage hover:text-rust transition-colors"
         >
           View on Letterboxd &rarr;
         </a>

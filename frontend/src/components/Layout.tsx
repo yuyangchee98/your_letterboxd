@@ -3,23 +3,25 @@ import { Outlet, NavLink } from 'react-router-dom';
 export default function Layout() {
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     isActive
-      ? 'text-[#00e054] font-medium'
-      : 'text-[#99aabb] hover:text-white transition-colors';
+      ? 'text-rust font-medium border-b-2 border-rust pb-1'
+      : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors pb-1 border-b-2 border-transparent';
 
   return (
-    <div className="min-h-screen bg-[#14181c]">
-      <header className="border-b border-[#2c3440] bg-[#0d1114]">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <NavLink to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#00e054] to-[#40bcf4] flex items-center justify-center">
-              <span className="text-xl font-bold text-[#14181c]">Y</span>
+    <div className="min-h-screen bg-cream-50">
+      <header className="bg-white border-b border-cream-200 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-8 py-5 flex items-center justify-between">
+          <NavLink to="/" className="flex items-center gap-3 group">
+            <div className="w-9 h-9 rounded-full bg-sage flex items-center justify-center shadow-sm">
+              <span className="text-lg font-display font-semibold text-white">Y</span>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">Your Letterboxd</h1>
-              <p className="text-xs text-[#99aabb]">Personal Film Analytics</p>
+              <h1 className="text-lg font-display font-semibold text-[var(--text-primary)] group-hover:text-rust transition-colors">
+                Your Letterboxd
+              </h1>
+              <p className="text-xs text-[var(--text-subtle)] tracking-wide">a personal film journal</p>
             </div>
           </NavLink>
-          <nav className="flex items-center gap-6">
+          <nav className="flex items-center gap-8">
             <NavLink to="/" className={navLinkClass} end>Dashboard</NavLink>
             <NavLink to="/films" className={navLinkClass}>Films</NavLink>
             <NavLink to="/diary" className={navLinkClass}>Diary</NavLink>
@@ -31,13 +33,13 @@ export default function Layout() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-6xl mx-auto px-8 py-12">
         <Outlet />
       </main>
 
-      <footer className="border-t border-[#2c3440] mt-auto">
-        <div className="max-w-7xl mx-auto px-6 py-4 text-center text-sm text-[#99aabb]">
-          Data synced from Letterboxd + TMDB
+      <footer className="border-t border-cream-200 mt-auto bg-cream-100">
+        <div className="max-w-6xl mx-auto px-8 py-6 text-center text-sm text-[var(--text-subtle)]">
+          Data lovingly synced from Letterboxd & TMDB
         </div>
       </footer>
     </div>

@@ -7,34 +7,61 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        display: ['Fraunces', 'Georgia', 'serif'],
+        body: ['Source Sans 3', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
       colors: {
+        cream: {
+          50: '#FAF7F2',
+          100: '#F5F0E8',
+          200: '#E8E4DC',
+        },
+        rust: {
+          DEFAULT: '#C45D3E',
+          light: '#D4745A',
+          dark: '#A84D32',
+        },
+        sage: {
+          DEFAULT: '#5B7C65',
+          light: '#7A9B84',
+          dark: '#4A6654',
+        },
+        ink: {
+          DEFAULT: '#2C3E50',
+          light: '#3D5166',
+        },
+        gold: {
+          DEFAULT: '#B8860B',
+        },
         tremor: {
           brand: {
-            faint: "#0d1114",
-            muted: "#1c2228",
-            subtle: "#2c3440",
-            DEFAULT: "#00e054",
-            emphasis: "#00c04a",
-            inverted: "#14181c",
+            faint: "#F5F0E8",
+            muted: "#E8E4DC",
+            subtle: "#D4CFC4",
+            DEFAULT: "#5B7C65",
+            emphasis: "#4A6654",
+            inverted: "#FFFFFF",
           },
           background: {
-            muted: "#1c2228",
-            subtle: "#14181c",
-            DEFAULT: "#14181c",
-            emphasis: "#2c3440",
+            muted: "#F5F0E8",
+            subtle: "#FAF7F2",
+            DEFAULT: "#FFFFFF",
+            emphasis: "#F5F0E8",
           },
           border: {
-            DEFAULT: "#2c3440",
+            DEFAULT: "#E8E4DC",
           },
           ring: {
-            DEFAULT: "#2c3440",
+            DEFAULT: "#D4CFC4",
           },
           content: {
-            subtle: "#99aabb",
-            DEFAULT: "#99aabb",
-            emphasis: "#ffffff",
-            strong: "#ffffff",
-            inverted: "#14181c",
+            subtle: "#9A9A9A",
+            DEFAULT: "#6B6B6B",
+            emphasis: "#3D3D3D",
+            strong: "#1A1A1A",
+            inverted: "#FFFFFF",
           },
         },
       },
