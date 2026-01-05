@@ -6,7 +6,7 @@ Inspired by [Your Spotify](https://github.com/Yooooomi/your_spotify), but for mo
 
 Your data is stored locally in a single SQLite database that you own. The app runs in a container and automatically syncs new activity on a schedule, so your watch history builds up over time.
 
-![Dashboard Screenshot](screenshot.png)
+![Demo](demo.gif)
 
 ## Features
 
