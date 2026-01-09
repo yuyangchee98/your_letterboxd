@@ -33,6 +33,50 @@
   /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+
+  /* Heatmap colors */
+  --heatmap-empty: #F5F0E8;
+  --heatmap-low: #C5D9CB;
+  --heatmap-medium: #9BBB9F;
+  --heatmap-high: #7A9B84;
+  --heatmap-max: #5B7C65;
+}
+
+.dark {
+  /* Backgrounds */
+  --bg-cream: #1a1a1a;
+  --bg-white: #242424;
+  --bg-warm: #2a2a2a;
+  --bg-highlight: #333333;
+
+  /* Text */
+  --text-primary: #F5F5F5;
+  --text-body: #E0E0E0;
+  --text-muted: #A0A0A0;
+  --text-subtle: #707070;
+
+  /* Accents - slightly brighter for dark backgrounds */
+  --accent-rust: #E07050;
+  --accent-rust-light: #F08060;
+  --accent-sage: #7A9B84;
+  --accent-sage-light: #9BBB9F;
+  --accent-gold: #D4A017;
+  --accent-ink: #6B9DC4;
+
+  /* Borders & Dividers */
+  --border-light: #3a3a3a;
+  --border-medium: #4a4a4a;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  /* Heatmap colors */
+  --heatmap-empty: #2a2a2a;
+  --heatmap-low: #3a5a40;
+  --heatmap-medium: #4a7a50;
+  --heatmap-high: #5a9a60;
+  --heatmap-max: #7ABB84;
 }
 
 * {

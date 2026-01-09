@@ -4,18 +4,18 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 function getColor(count: number): string {
-  if (count === 0) return '#F5F0E8';  // cream-100
-  if (count === 1) return '#C5D9CB';  // very light sage
-  if (count === 2) return '#9BBB9F';  // light sage
-  if (count === 3) return '#7A9B84';  // sage-light
-  return '#5B7C65';                    // sage
+  if (count === 0) return 'var(--heatmap-empty)';
+  if (count === 1) return 'var(--heatmap-low)';
+  if (count === 2) return 'var(--heatmap-medium)';
+  if (count === 3) return 'var(--heatmap-high)';
+  return 'var(--heatmap-max)';
 }
 
 export default function CalendarHeatmap() {
   const { data, loading } = useCalendarData();
 
   if (loading) {
-    return <div className="h-32 animate-pulse bg-cream-100 rounded" />;
+    return <div className="h-32 animate-pulse bg-[var(--bg-warm)] rounded" />;
   }
 
   const countMap = new Map(data.map(d => [d.date, d.count]));
