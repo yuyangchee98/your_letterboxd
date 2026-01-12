@@ -35,6 +35,42 @@ Data syncs automatically every few hours and is stored locally in SQLite.
 
 ### Installation
 
+#### Option 1: Pre-built Image (recommended)
+
+1. Create a `docker-compose.yml`:
+```yaml
+services:
+  your-letterboxd:
+    image: yuyangchee98/your_letterboxd:main
+    ports:
+      - "60007:8000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - LETTERBOXD_USERNAME=${LETTERBOXD_USERNAME}
+      - TMDB_ACCESS_TOKEN=${TMDB_ACCESS_TOKEN}
+    restart: unless-stopped
+```
+
+2. Create a `.env` file in the same directory:
+```
+LETTERBOXD_USERNAME=your_username
+TMDB_ACCESS_TOKEN=your_read_access_token
+```
+
+3. Run:
+```
+docker compose up -d
+```
+
+4. Open http://localhost:60007
+
+The image is available from:
+- Docker Hub: `yuyangchee98/your_letterboxd:main`
+- GitHub Container Registry: `ghcr.io/yuyangchee98/your_letterboxd:main`
+
+#### Option 2: Build from Source
+
 1. Clone the repository
 
 2. Create a `.env` file:
