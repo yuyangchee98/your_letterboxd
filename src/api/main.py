@@ -1348,13 +1348,45 @@ def get_profile(db: Session = Depends(get_db)):
             "stats": {},
         }
 
+    # Enrich favorites with full film data
+    favorites = []
+    if user.favorites_json:
+        for fav_id, fav_data in user.favorites_json.items():
+            slug = fav_data.get("slug")
+            film = db.query(Film).filter(Film.slug == slug).first() if slug else None
+            if film:
+                # Get user's rating for this film
+                user_film = db.query(UserFilm).filter(
+                    UserFilm.user_id == user.id,
+                    UserFilm.film_id == film.id
+                ).first()
+                favorites.append({
+                    "id": film.id,
+                    "slug": film.slug,
+                    "title": film.title,
+                    "year": film.year,
+                    "poster_url": film.poster_url,
+                    "rating": user_film.rating if user_film else None,
+                    "letterboxd_url": fav_data.get("url"),
+                })
+            else:
+                # Film not in DB yet, use basic data from letterboxd
+                favorites.append({
+                    "slug": slug,
+                    "title": fav_data.get("name"),
+                    "year": fav_data.get("year"),
+                    "poster_url": None,
+                    "rating": None,
+                    "letterboxd_url": fav_data.get("url"),
+                })
+
     return {
         "username": user.username,
         "display_name": user.display_name,
         "bio": user.bio,
         "location": user.location,
         "website": user.website,
-        "favorites": user.favorites_json or [],
+        "favorites": favorites,
         "stats": user.stats_json or {},
     }
 

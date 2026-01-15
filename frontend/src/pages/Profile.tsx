@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useProfile, useSyncStatus, triggerSync } from '../hooks/useApi';
 
 export default function Profile() {
@@ -137,59 +138,94 @@ export default function Profile() {
         </div>
       </div>
 
-      {profile.stats && Object.keys(profile.stats).length > 0 && (
+      {(profile.stats && Object.keys(profile.stats).length > 0) || (profile.favorites && profile.favorites.length > 0) ? (
         <div>
-          <h2 className="text-xl font-display font-semibold text-[var(--text-primary)] mb-4">Letterboxd Stats</h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {profile.stats.films !== undefined && (
-              <div className="bg-white p-5 rounded-xl border border-cream-200 shadow-sm">
-                <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{profile.stats.films}</p>
-                <p className="text-[var(--text-muted)] text-sm">Films</p>
-              </div>
-            )}
-            {profile.stats.this_year !== undefined && (
-              <div className="bg-white p-5 rounded-xl border border-cream-200 shadow-sm">
-                <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{profile.stats.this_year}</p>
-                <p className="text-[var(--text-muted)] text-sm">This Year</p>
-              </div>
-            )}
-            {profile.stats.lists !== undefined && (
-              <div className="bg-white p-5 rounded-xl border border-cream-200 shadow-sm">
-                <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{profile.stats.lists}</p>
-                <p className="text-[var(--text-muted)] text-sm">Lists</p>
-              </div>
-            )}
-            {profile.stats.following !== undefined && (
-              <div className="bg-white p-5 rounded-xl border border-cream-200 shadow-sm">
-                <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{profile.stats.following}</p>
-                <p className="text-[var(--text-muted)] text-sm">Following</p>
-              </div>
-            )}
-            {profile.stats.followers !== undefined && (
-              <div className="bg-white p-5 rounded-xl border border-cream-200 shadow-sm">
-                <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{profile.stats.followers}</p>
-                <p className="text-[var(--text-muted)] text-sm">Followers</p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+          <h2 className="text-xl font-display font-semibold text-[var(--text-primary)] mb-4">Letterboxd</h2>
 
-      {profile.favorites && profile.favorites.length > 0 && (
-        <div>
-          <h2 className="text-xl font-display font-semibold text-[var(--text-primary)] mb-4">Favorite Films</h2>
-          <div className="flex flex-wrap gap-2">
-            {profile.favorites.map((slug: string) => (
-              <span
-                key={slug}
-                className="px-3 py-1.5 bg-cream-100 text-[var(--text-muted)] text-sm rounded-full border border-cream-200"
-              >
-                {slug.replace(/-/g, ' ')}
-              </span>
-            ))}
-          </div>
+          {profile.favorites && profile.favorites.length > 0 && (
+            <div className="mb-6">
+              <p className="text-[var(--text-muted)] text-sm mb-3">Favorites</p>
+              <div className="grid grid-cols-4 gap-3 max-w-md">
+                {(profile.favorites as Array<{ id?: number; slug: string; title: string; year: number; poster_url: string | null; rating: number | null; letterboxd_url: string }>).map((film) =>
+                  film.id ? (
+                    <Link
+                      key={film.slug}
+                      to={`/films/${film.id}`}
+                      className="group"
+                    >
+                      <div className="aspect-[2/3] rounded-lg overflow-hidden bg-cream-100 border border-cream-200 group-hover:border-sage transition-colors">
+                        {film.poster_url ? (
+                          <img
+                            src={film.poster_url}
+                            alt={film.title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-[var(--text-muted)] text-xs text-center p-2">
+                            {film.title}
+                          </div>
+                        )}
+                      </div>
+                      {film.rating && (
+                        <p className="text-xs text-[var(--text-muted)] mt-1 text-center">★ {film.rating}</p>
+                      )}
+                    </Link>
+                  ) : (
+                    <a
+                      key={film.slug}
+                      href={film.letterboxd_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group"
+                    >
+                      <div className="aspect-[2/3] rounded-lg overflow-hidden bg-cream-100 border border-cream-200 group-hover:border-sage transition-colors">
+                        <div className="w-full h-full flex items-center justify-center text-[var(--text-muted)] text-xs text-center p-2">
+                          {film.title}
+                        </div>
+                      </div>
+                    </a>
+                  )
+                )}
+              </div>
+            </div>
+          )}
+
+          {profile.stats && Object.keys(profile.stats).length > 0 && (
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {profile.stats.films !== undefined && (
+                <div className="bg-white p-5 rounded-xl border border-cream-200 shadow-sm">
+                  <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{profile.stats.films}</p>
+                  <p className="text-[var(--text-muted)] text-sm">Films</p>
+                </div>
+              )}
+              {profile.stats.this_year !== undefined && (
+                <div className="bg-white p-5 rounded-xl border border-cream-200 shadow-sm">
+                  <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{profile.stats.this_year}</p>
+                  <p className="text-[var(--text-muted)] text-sm">This Year</p>
+                </div>
+              )}
+              {profile.stats.lists !== undefined && (
+                <div className="bg-white p-5 rounded-xl border border-cream-200 shadow-sm">
+                  <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{profile.stats.lists}</p>
+                  <p className="text-[var(--text-muted)] text-sm">Lists</p>
+                </div>
+              )}
+              {profile.stats.following !== undefined && (
+                <div className="bg-white p-5 rounded-xl border border-cream-200 shadow-sm">
+                  <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{profile.stats.following}</p>
+                  <p className="text-[var(--text-muted)] text-sm">Following</p>
+                </div>
+              )}
+              {profile.stats.followers !== undefined && (
+                <div className="bg-white p-5 rounded-xl border border-cream-200 shadow-sm">
+                  <p className="text-2xl font-mono font-medium text-[var(--text-primary)]">{profile.stats.followers}</p>
+                  <p className="text-[var(--text-muted)] text-sm">Followers</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
-      )}
+      ) : null}
 
       <div>
         <a
