@@ -113,8 +113,7 @@ class LetterboxdClient:
                 for slug, data in movies.items():
                     if not isinstance(data, dict):
                         continue
-                    raw_rating = data.get("rating")
-                    rating = raw_rating / 2.0 if raw_rating else None
+                    rating = data.get("rating")
                     result.append({
                         "slug": slug,
                         "name": data.get("name"),
@@ -160,8 +159,7 @@ class LetterboxdClient:
                 if isinstance(date_info, dict) and date_info.get("year"):
                     date_str = f"{date_info['year']}-{date_info.get('month', 1):02d}-{date_info.get('day', 1):02d}"
 
-                raw_rating = actions.get("rating")
-                rating = raw_rating / 2.0 if raw_rating else None
+                rating = actions.get("rating")
 
                 entries.append({
                     "id": entry_id,
