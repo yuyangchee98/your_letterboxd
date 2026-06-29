@@ -69,7 +69,7 @@ class LetterboxdClient:
 
         Returns dict with keys like:
         - username, display_name, bio, location, website
-        - favorites (list of film slugs)
+        - favorites (dict of film_id -> film data)
         - stats (films, this_year, lists, following, followers)
         """
         self._wait()
@@ -153,10 +153,12 @@ class LetterboxdClient:
                 if not isinstance(data, dict):
                     continue
                 actions = data.get("actions", {})
-                date_info = data.get("date", {})
+                date_info = data.get("date")
 
                 date_str = None
-                if isinstance(date_info, dict) and date_info.get("year"):
+                if isinstance(date_info, str) and date_info:
+                    date_str = date_info[:10]
+                elif isinstance(date_info, dict) and date_info.get("year"):
                     date_str = f"{date_info['year']}-{date_info.get('month', 1):02d}-{date_info.get('day', 1):02d}"
 
                 rating = actions.get("rating")

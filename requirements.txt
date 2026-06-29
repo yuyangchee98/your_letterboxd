@@ -1,5 +1,5 @@
 # Scraping
-letterboxdpy>=6.4.0
+letterboxdpy==6.5.7
 requests>=2.31.0
 
 # Database
