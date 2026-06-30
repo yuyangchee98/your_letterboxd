@@ -10,6 +10,10 @@ Your data is stored locally in a single SQLite database that you own. The app ru
 
 [View screenshots individually](https://chyuang.com/projects/your-letterboxd/)
 
+## Project Status
+
+This is a small, feature-complete project. It's not under active feature development, but it is maintained — I'll fix bugs as they come up. Bug reports are welcome via [Issues](https://github.com/yuyangchee98/your_letterboxd/issues).
+
 ## Features
 
 - **Dashboard** — Watch stats, rating distributions, top genres/directors/actors, calendar heatmap
